@@ -343,12 +343,15 @@ class LeadController extends AdminBaseController
     {
         $this->leadID = $leadID;
         $this->lead = Lead::findOrFail($leadID);
+        $this->status = LeadStatus::all();
         return view('admin.lead.followup.show', $this->data);
     }
 
-    public function editFollow($id)
+    public function editFollow($id,$leadId)
     {
         $this->follow = LeadFollowUp::findOrFail($id);
+        $this->lead = Lead::findOrFail($leadId);
+        $this->status = LeadStatus::all();
         $view = view('admin.lead.followup.edit', $this->data)->render();
         return Reply::dataOnly(['html' => $view]);
     }
@@ -368,6 +371,8 @@ class LeadController extends AdminBaseController
         $followUp->save();
 
         $this->lead = Lead::findOrFail($request->lead_id);
+        $this->lead->status_id = $request->status; 
+        $this->lead->save();
 
         $view = view('admin.lead.followup.task-list-ajax', $this->data)->render();
 

@@ -28,6 +28,19 @@
                             <textarea id="remark" name="remark" class="form-control">{{ $follow->remark }}</textarea>
                         </div>
                     </div>
+                    <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">@lang('app.status')</label>
+                        <select name="status" id="status" class="form-control">
+                                            @forelse($status as $sts)
+                                                <option @if($lead->status_id == $sts->id) selected
+                                                        @endif value="{{ $sts->id }}"> {{ ucfirst($sts->type) }}</option>
+                                            @empty
+
+                                            @endforelse
+                                        </select>
+                    </div>
+                </div>
                 </div>
                 <!--/row-->
 
