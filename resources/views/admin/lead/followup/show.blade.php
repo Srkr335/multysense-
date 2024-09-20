@@ -147,6 +147,19 @@
                                                             </div>
                                                         </div>
                                                         <!--/span-->
+                                                        <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">@lang('app.status')</label>
+                        <select name="status" id="status" class="form-control" disabled>
+                                            @forelse($status as $sts)
+                                                <option @if($lead->status_id == $sts->id) selected
+                                                        @endif value="{{ $sts->id }}"> {{ ucfirst($sts->type) }}</option>
+                                            @empty
+
+                                            @endforelse
+                                        </select>
+                    </div>
+                </div>
                                                     </div>
                                                     <!--/row-->
 
@@ -231,13 +244,17 @@
             }
 
             var id = $(this).data('follow-id');
-            var url = "{{route('admin.leads.follow-up-edit', ':id')}}";
-            url = url.replace(':id', id);
+            var leadId = {{ $lead->id }};
+            var url = "{{route('admin.leads.follow-up-edit', [':id', ':leadId'])}}";
+            url = url.replace(':id', id).replace(':leadId', leadId);
 
             $.easyAjax({
                 url: url,
                 type: "GET",
-                data: {taskId: id},
+                data: {
+                    taskId: id,
+                    leadId: leadId
+                },
                 success: function (data) {
                     editTaskPanel.html(data.html);
                     taskListPanel.switchClass("col-md-12", "col-md-8", 1000, "easeInOutQuad");
