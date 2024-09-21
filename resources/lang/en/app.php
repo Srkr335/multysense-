@@ -31,6 +31,7 @@ return array (
   'selectMilestone' => 'Select Milestone',
   'phone' => 'Phone',
   'mobile' => 'Mobile',
+  'whatsapp' => 'Whatsapp',
   'createdAt' => 'Created At',
   'action' => 'Action',
   'search' => 'Search...',

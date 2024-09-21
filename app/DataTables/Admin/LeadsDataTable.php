@@ -131,6 +131,13 @@ class LeadsDataTable extends BaseDataTable
                     return '--';
 
             })
+            ->editColumn('whatsapp', function ($row) {
+                if (!is_null($row->mobile) && $row->mobile != ' ') {
+                    $whatsappLink = 'https://api.whatsapp.com/send/?phone=' . preg_replace('/\D/', '', $row->mobile).'&text&type=phone_number&app_absent=0'; // Removes non-numeric characters
+                    return '<a href="'. $whatsappLink .'" target="_blank"><i class="fa fa-whatsapp"></i></a>';
+                }
+                return '--';
+            })            
             ->removeColumn('status_id')
             ->removeColumn('client_id')
             ->removeColumn('lead_value')
@@ -138,7 +145,7 @@ class LeadsDataTable extends BaseDataTable
             ->removeColumn('next_follow_up')
             ->removeColumn('statusName')
             ->addIndexColumn()
-            ->rawColumns(['checkbox','status', 'action', 'client_name', 'next_follow_up_date', 'agent_name','mobile','client_email']);
+            ->rawColumns(['checkbox','status', 'action', 'client_name', 'next_follow_up_date', 'agent_name','mobile','client_email','whatsapp']);
     }
 
     /**
@@ -257,6 +264,7 @@ class LeadsDataTable extends BaseDataTable
             __('modules.lead.leadAgent') => ['data' => 'agent_name', 'name' => 'users.name'],
             __('modules.lead.client_email') => ['data' => 'client_email', 'name' => 'client_email'],
             __('app.mobile') => ['data' => 'mobile', 'name' => 'mobile'],
+            __('app.whatsapp') => ['data' => 'whatsapp', 'name' => 'whatsapp'],
             __('app.status') => ['data' => 'status', 'name' => 'status', 'exportable' => false],
             __('app.leadStatus') => ['data' => 'leadStatus', 'name' => 'leadStatus', 'visible' => false, 'orderable' => false, 'searchable' => false],
             Column::computed('action', __('app.action'))
