@@ -176,6 +176,7 @@
                                         <label>@lang('app.mobile')</label>
                                         <div class="form-group">
                                             <select class="select2 phone_country_code form-control" name="phone_code">
+                                            <option value ="">--</option>
                                                 @foreach ($countries as $item)
                                                     <option value="{{ $item->id }}">+{{ $item->phonecode.' ('.$item->iso.')' }}</option>
                                                 @endforeach
