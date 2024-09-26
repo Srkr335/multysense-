@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Helper\Files;
+use Intervention\Image\Facades\Image;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class AuthApiController extends BaseController
@@ -75,6 +77,12 @@ class AuthApiController extends BaseController
             $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
 
             $success['name'] =  $user->name;
+            $success['user_id'] =  $user->id;
+            $success['email'] =  $user->email;
+            $success['mobile'] =  $user->mobile;
+            $success['image'] =  $user->image;
+            // $success['image'] = Files::upload($user->image, 'avatar', 300);
+
 
    
 
