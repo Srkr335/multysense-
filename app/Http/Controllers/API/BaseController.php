@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    public function sendResponse($result, $message)
+    public function sendResponse($result, $message, $code = 200)
 
     {
 
@@ -18,6 +18,8 @@ class BaseController extends Controller
             'data'    => $result,
 
             'message' => $message,
+
+            'status' => $code
 
         ];
 
@@ -48,6 +50,8 @@ class BaseController extends Controller
             'success' => false,
 
             'message' => $error,
+
+            'status' => $code
 
         ];
 
