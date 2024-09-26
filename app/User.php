@@ -15,10 +15,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Trebol\Entrust\Traits\EntrustUserTrait;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Notifiable, EntrustUserTrait, Authenticatable, CanResetPassword;
+    use Notifiable, EntrustUserTrait, Authenticatable, CanResetPassword, HasApiTokens;
 
 
     /**
@@ -47,6 +48,12 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
     public $appends = ['image_url', 'modules', 'user_other_role'];
 
+    protected $casts = [
+
+        'email_verified_at' => 'datetime',
+
+    ];
+    
     protected static function boot()
     {
         parent::boot();

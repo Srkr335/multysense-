@@ -18,6 +18,7 @@
         "froiden/envato": "^1.0",
         "froiden/laravel-installer": "^1.6",
         "froiden/laravel-rest-api": "^7.0",
+        "google/apiclient": "^2.10",
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.3",
         "laravel-lang/lang": "~6.1",
@@ -27,6 +28,7 @@
         "laravel/framework": "^7.0",
         "laravel/helpers": "^1.1",
         "laravel/nexmo-notification-channel": "^2.3",
+        "laravel/sanctum": "^2.15",
         "laravel/slack-notification-channel": "^2.0",
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
@@ -53,8 +55,7 @@
         "unicodeveloper/laravel-paystack": "^1.0",
         "yajra/laravel-datatables-buttons": "~4.6",
         "yajra/laravel-datatables-html": "~4.4",
-        "yajra/laravel-datatables-oracle": "^9.0",
-        "google/apiclient": "^2.10"
+        "yajra/laravel-datatables-oracle": "^9.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
