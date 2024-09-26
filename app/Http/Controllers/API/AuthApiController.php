@@ -91,6 +91,22 @@ class AuthApiController extends BaseController
     }
     public function reset_password(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+
+            'name' => 'required',
+
+            'email' => 'required|email',
+
+            'password' => 'required',
+
+            'c_password' => 'required|same:password',
+
+        ]);
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
         return $request->all();
     }
 }
