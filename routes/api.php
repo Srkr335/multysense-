@@ -2,6 +2,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthApiController;
+use App\Http\Controllers\API\DashboardApiController;
+use App\Http\Controllers\API\LeadApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,5 +23,9 @@ Route::post('login',[AuthApiController::class,'login']);
 Route::middleware('auth:sanctum')->group( function () {
 
     Route::post('reset_password', [AuthApiController::class, 'reset_password']);
+    Route::get('get_dashboard_data/{id}',[DashboardApiController::class,'getDashboardData']);
+    Route::post('add_new_lead',[LeadApiController::class,'add_new_lead']);
+    Route::get('lead-list',[LeadApiController::class,'getLeads']);
+
 
 });

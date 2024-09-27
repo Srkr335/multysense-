@@ -81,10 +81,6 @@ class AuthApiController extends BaseController
             $success['email'] =  $user->email;
             $success['mobile'] =  $user->mobile;
             $success['image'] =  $user->image;
-            // $success['image'] = Files::upload($user->image, 'avatar', 300);
-
-
-   
 
             return $this->sendResponse($success, 'User login successfully.');
 
@@ -99,17 +95,6 @@ class AuthApiController extends BaseController
     }
     public function reset_password(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-
-            'name' => 'required',
-
-            'email' => 'required|email',
-
-            'password' => 'required',
-
-            'c_password' => 'required|same:password',
-
-        ]);
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
