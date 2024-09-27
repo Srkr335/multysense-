@@ -9,6 +9,7 @@ use App\User;
 use App\Lead;
 use App\LeadFollowUp;
 use App\Http\Controllers\API\BaseController as BaseController;
+use DB;
 
 class LeadApiController extends BaseController
 {
@@ -29,23 +30,24 @@ class LeadApiController extends BaseController
         $totalLeadsCount = $totalLeads->count();
         $totalClientConverted = $totalClientConverted->count();
 
-        // $pendingLeadFollowUps = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
-        //     ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
-        //     ->where('leads.next_follow_up', 'yes');
-            // return $pendingLeadFollowUps;
-
-        // if (!$this->user->cans('view_lead')) {
-        //     $pendingLeadFollowUps = $pendingLeadFollowUps->where('leads.agent_id', $this->user->id);
-        // }
+$pendingLeadFollowUps=[];
+        if (auth()->user()->cans('view_lead')) {
+        $pendingLeadFollowUps = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
+            ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
+            ->where('leads.next_follow_up', 'yes')
+            ->where('leads.agent_id', $agentId)
+            ->get();
+        }
 
         // $this->pendingLeadFollowUps = $pendingLeadFollowUps->count();
         // $this->leadAgents = LeadAgent::with('user')->has('user')->get();
 
-        return response()->json([
+        return $this->sendResponse([
             'totalLeads' => $totalLeads,
             'totalLeadsCount' => $totalLeadsCount,
             'totalClientConverted' => $totalClientConverted,
-        ]);
+            'pendingLeadFollowUps'=>$pendingLeadFollowUps,
+        ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
     {
