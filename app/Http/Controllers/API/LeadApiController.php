@@ -84,7 +84,6 @@ class LeadApiController extends BaseController
        ->where('leads.agent_id', $agentId)
        ->select('leads.*', 'lead_status.type as status_type','lead_follow_up.created_at as followup_created_at') 
        ->get(); 
-       return $followupsLeadList;
 
        $pendingLeadlist = [];
        $confirmedLeadList = [];
