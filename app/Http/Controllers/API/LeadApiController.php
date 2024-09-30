@@ -80,17 +80,18 @@ class LeadApiController extends BaseController
         $agentId = ($agent) ? $agent->id : '';
 
         $followupsLeadList = Lead::with('follow')->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
+       ->leftJoin('lead_follow_up', 'leads.id', '=', 'lead_follow_up.lead_id')
        ->where('leads.agent_id', $agentId)
+       ->select('leads.*', 'lead_status.type as status_type','lead_follow_up.created_at as followup_created_at') 
        ->get(); 
-       return $followupsLeadList;
 
        $pendingLeadlist = [];
        $confirmedLeadList = [];
 
        foreach ($followupsLeadList as $lead) {
-        if ($lead->type == 'pending' || $lead->type == 'inprocess') {
+        if ($lead->status_type == 'pending' || $lead->status_type == 'inprocess') {
                 $pendingLeadlist[] = $lead;
-            } elseif ($lead->type == 'converted') {
+            } elseif ($lead->status_type == 'converted') {
              $confirmedLeadList[] = $lead;
              }
           }

@@ -41,7 +41,7 @@ class Lead extends BaseModel
 
     public function follow()
     {
-        return $this->hasMany(LeadFollowUp::class);
+        return $this->hasMany(LeadFollowUp::class,'lead_id');
     }
 
     public function files()
