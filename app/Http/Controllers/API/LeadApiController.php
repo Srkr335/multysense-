@@ -47,24 +47,6 @@ class LeadApiController extends BaseController
         ->where('leads.agent_id', $agentId)
         ->select('lead_follow_up.*', 'leads.*', 'lead_follow_up.created_at as followup_created_at') 
         ->get();
-
-        $followupsLeadList = LeadFollowUp::join('leads', 'lead_follow_up.lead_id', '=', 'leads.id')
-    ->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
-    ->where('leads.agent_id', $agentId)
-    ->select('lead_follow_up.*', 'leads.*', 'lead_status.id as lead_status_id', 'lead_status.type', 'lead_follow_up.created_at as followup_created_at') 
-    ->get(); 
-
-    $pendingLeadlist = [];
-    $confirmedLeadList = [];
-
-// Iterate through the list to categorize leads
-    foreach ($followupsLeadList as $lead) {
-          if ($lead->type == 'pending' || $lead->type == 'inprocess') {
-                  $pendingLeadlist[] = $lead;
-              } elseif ($lead->type == 'converted') {
-               $confirmedLeadList[] = $lead;
-               }
-            }
             
         return $this->sendResponse([
             'totalLeads' => $totalLeads,
@@ -74,7 +56,6 @@ class LeadApiController extends BaseController
             'todaysFollowups' => $todaysFollowups,
             'followupsDetails' => $followupsDetails,
             'pendingLeadlist' => $pendingLeadlist,
-            ''
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
@@ -92,5 +73,30 @@ class LeadApiController extends BaseController
             'message' => 'Lead created successfully!',
             'lead' => $lead,
         ], 201);
+    }
+    public function getPendingDetails()
+    {
+        $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
+        $agentId = ($agent) ? $agent->id : '';
+
+        $followupsLeadList = Lead::with('follow')->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
+       ->where('leads.agent_id', $agentId)
+       ->get(); 
+       return $followupsLeadList;
+
+       $pendingLeadlist = [];
+       $confirmedLeadList = [];
+
+       foreach ($followupsLeadList as $lead) {
+        if ($lead->type == 'pending' || $lead->type == 'inprocess') {
+                $pendingLeadlist[] = $lead;
+            } elseif ($lead->type == 'converted') {
+             $confirmedLeadList[] = $lead;
+             }
+          }
+          return $this->sendResponse([
+            'pendingLeadlist' => $pendingLeadlist,
+            'confirmedLeadList' => $confirmedLeadList,
+        ], 'Leads fetch successful.');
     }
 }
