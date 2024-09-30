@@ -107,7 +107,7 @@ class LeadController extends AdminBaseController
         $lead->state = $request->state;
         $lead->country = $request->country;
         $lead->postal_code = $request->postal_code;
-        $lead->note = $request->note;
+        $lead->note = strip_tags($request->note);
         $lead->category_id = $request->category_id;
         $lead->next_follow_up = $request->next_follow_up;
         $lead->agent_id = $request->agent_id;
@@ -174,7 +174,7 @@ class LeadController extends AdminBaseController
         $lead->country = $request->country;
         $lead->postal_code = $request->postal_code;
 
-        $lead->note = $request->note;
+        $lead->note = strip_tags($request->note);
         $lead->status_id = $request->status;
         $lead->source_id = $request->source;
         $lead->category_id = $request->category_id;

@@ -8,6 +8,7 @@ use App\LeadAgent;
 use App\User;
 use App\Lead;
 use App\LeadFollowUp;
+use Carbon\Carbon;
 use App\Http\Controllers\API\BaseController as BaseController;
 use DB;
 
@@ -17,7 +18,6 @@ class LeadApiController extends BaseController
     {
         $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
         $agentId = ($agent) ? $agent->id : '';
-
 
         if (!auth()->user()->cans('view_lead')) {
             $totalLeads = Lead::where('leads.agent_id', $agentId)->get();
@@ -30,23 +30,51 @@ class LeadApiController extends BaseController
         $totalLeadsCount = $totalLeads->count();
         $totalClientConverted = $totalClientConverted->count();
 
-$pendingLeadFollowUps=[];
+        $pendingLeadFollowUps=[];
         if (auth()->user()->cans('view_lead')) {
         $pendingLeadFollowUps = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
             ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
             ->where('leads.next_follow_up', 'yes')
             ->where('leads.agent_id', $agentId)
-            ->get();
+            ->count();
         }
+        $todaysFollowups = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'),Carbon::today()->format('Y-m-d'))
+        ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
+        ->where('leads.next_follow_up', 'yes')
+        ->where('leads.agent_id', $agentId)->count();
+    
+        $followupsDetails = LeadFollowUp::join('leads','lead_follow_up.lead_id','leads.id')
+        ->where('leads.agent_id', $agentId)
+        ->select('lead_follow_up.*', 'leads.*', 'lead_follow_up.created_at as followup_created_at') 
+        ->get();
 
-        // $this->pendingLeadFollowUps = $pendingLeadFollowUps->count();
-        // $this->leadAgents = LeadAgent::with('user')->has('user')->get();
+        $followupsLeadList = LeadFollowUp::join('leads', 'lead_follow_up.lead_id', '=', 'leads.id')
+    ->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
+    ->where('leads.agent_id', $agentId)
+    ->select('lead_follow_up.*', 'leads.*', 'lead_status.id as lead_status_id', 'lead_status.type', 'lead_follow_up.created_at as followup_created_at') 
+    ->get(); 
 
+    $pendingLeadlist = [];
+    $confirmedLeadList = [];
+
+// Iterate through the list to categorize leads
+    foreach ($followupsLeadList as $lead) {
+          if ($lead->type == 'pending' || $lead->type == 'inprocess') {
+                  $pendingLeadlist[] = $lead;
+              } elseif ($lead->type == 'converted') {
+               $confirmedLeadList[] = $lead;
+               }
+            }
+            
         return $this->sendResponse([
             'totalLeads' => $totalLeads,
             'totalLeadsCount' => $totalLeadsCount,
             'totalClientConverted' => $totalClientConverted,
             'pendingLeadFollowUps'=>$pendingLeadFollowUps,
+            'todaysFollowups' => $todaysFollowups,
+            'followupsDetails' => $followupsDetails,
+            'pendingLeadlist' => $pendingLeadlist,
+            ''
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
