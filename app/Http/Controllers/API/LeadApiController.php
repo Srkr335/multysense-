@@ -55,7 +55,6 @@ class LeadApiController extends BaseController
             'pendingLeadFollowUps'=>$pendingLeadFollowUps,
             'todaysFollowups' => $todaysFollowups,
             'followupsDetails' => $followupsDetails,
-            'pendingLeadlist' => $pendingLeadlist,
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
