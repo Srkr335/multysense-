@@ -9,6 +9,7 @@ use App\User;
 use App\Lead;
 use App\LeadFollowUp;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
 use DB;
 
@@ -59,20 +60,24 @@ class LeadApiController extends BaseController
     }
     public function add_new_lead(Request $request)
     {
-        $lead = new Lead();
         
-        $lead->client_name = $request->lead_name;
+        $leadStatus = LeadStatus::where('default', '1')->first();
+        $lead = new Lead();
+        $lead->company_name = $request->company_name;
+        $lead->address = $request->address;
+        $lead->client_name = $request->client_name;
+        $lead->status_id = 1;
         $lead->client_email = $request->email;
         $lead->mobile = $request->mobile;
-        $lead->agent_id = $request->agent_name;
-        $lead->save();
-
-        // Return response
-        return response()->json([
-            'message' => 'Lead created successfully!',
-            'lead' => $lead,
-        ], 201);
-    }
+        $lead->note = $request->feedback;
+        $lead->lead_type = $request->lead_type;
+        $lead->next_follow_up = ($request->next_follow_up) ? $request->next_follow_up : 'yes';
+        $lead->value = ($request->value) ? $request->value : 0;
+        $lead->column_priority = 0; 
+        // $lead->save();
+        return $this->sendResponse($lead, 'User login successfully.');
+       
+    }    
     public function getPendingDetails()
     {
         $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
@@ -98,5 +103,44 @@ class LeadApiController extends BaseController
             'pendingLeadlist' => $pendingLeadlist,
             'confirmedLeadList' => $confirmedLeadList,
         ], 'Leads fetch successful.');
+    }
+    public function update_lead(Request $request,$id)
+    {
+
+    $lead = Lead::findOrFail($id);
+    $lead->update([
+        'company_name' => $request->company_name,
+        'address' => $request->address,
+        'client_name' => $request->client_name,
+        'client_email' => $request->email,
+        'mobile' => $request->mobile,
+        'note' => $request->feedback,
+        'status_id' => $request->lead_status,
+        'lead_type' => $request->lead_type,
+        'next_follow_up' => ($request->next_follow_up) ? $request->next_follow_up : 'yes',
+        'value' => ($request->value) ? $request->value : 0,
+        'column_priority' => 0,
+    ]);
+
+    return response()->json([
+        'message' => 'Lead updated successfully!',
+        'data' => $lead,  
+    ], 200);
+        
+    }
+    public function add_follow_up(Request $request)
+    {
+        return $request->all();
+    }
+    public function getLeadDetails($id)
+    {
+        $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
+        $agentId = ($agent) ? $agent->id : '';
+        $leadDetail = Lead::where('leads.agent_id', $agentId)->find($id);
+        return response()->json([
+            'message' => 'Lead Details fetch successful!',
+            'data' => $leadDetail,  
+        ], 200);
+        
     }
 }

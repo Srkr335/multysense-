@@ -24,9 +24,12 @@ Route::middleware('auth:sanctum')->group( function () {
 
     Route::post('reset_password', [AuthApiController::class, 'reset_password']);
     Route::get('get_dashboard_data/{id}',[DashboardApiController::class,'getDashboardData']);
-    Route::post('add_new_lead',[LeadApiController::class,'add_new_lead']);
     Route::get('lead-list',[LeadApiController::class,'getLeads']);
     Route::get('get-pendingandconfirm-lead',[LeadApiController::class,'getPendingDetails']);
+    Route::post('add-new-lead',[LeadApiController::class,'add_new_lead']);
+    Route::post('update-lead-profile/{id}',[LeadApiController::class,'update_lead']);
+    Route::post('add-follow-up',[LeadApiController::class,'add_follow_up']);
+    Route::get('lead-details/{id}',[LeadApiController::class,'getLeadDetails']);
 
 
 });
