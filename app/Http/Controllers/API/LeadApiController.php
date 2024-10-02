@@ -21,7 +21,9 @@ class LeadApiController extends BaseController
         $agentId = ($agent) ? $agent->id : '';
 
         if (!auth()->user()->cans('view_lead')) {
-            $totalLeads = Lead::where('leads.agent_id', $agentId)->get();
+            $totalLeads = Lead::where('leads.agent_id', $agentId)
+            ->select('leads.*','leads.created_at as leads_created_at')
+            ->get();
         } else {
             $totalLeads = Lead::all();
         }
@@ -130,7 +132,20 @@ class LeadApiController extends BaseController
     }
     public function add_follow_up(Request $request)
     {
-        return $request->all();
+        $addFollowup = new LeadFollowUp();
+        $addFollowup->lead_id = $request->lead_id;
+        $addFollowup->remark = $request->description;
+        $addFollowup->next_follow_up_date = date('Y-m-d', strtotime($request->next_followup_date));
+        $addFollowup->save();
+        $leadStatus = Lead::where('id',$request->lead_id)->update([
+            'status_id' => $request->status,
+        ]);
+        return response()->json([
+            'message' => 'FollowUp Added successfully!',
+            'data' => $addFollowup,  
+            'leadStatus' => $leadStatus,
+        ], 200);
+
     }
     public function getLeadDetails($id)
     {
