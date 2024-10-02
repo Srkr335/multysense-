@@ -137,9 +137,13 @@ class LeadApiController extends BaseController
         $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
         $agentId = ($agent) ? $agent->id : '';
         $leadDetail = Lead::where('leads.agent_id', $agentId)->find($id);
+        $leadFollowupDetails = LeadFollowUp::where('lead_id',$id)
+        ->select('lead_follow_up.*','lead_follow_up.created_at as followup_created_at')
+        ->get();
         return response()->json([
             'message' => 'Lead Details fetch successful!',
-            'data' => $leadDetail,  
+            'data' => $leadDetail, 
+             'leadFollowupDetails' =>$leadFollowupDetails,
         ], 200);
         
     }
