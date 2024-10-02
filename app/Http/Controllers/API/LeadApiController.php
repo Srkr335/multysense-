@@ -8,6 +8,7 @@ use App\LeadAgent;
 use App\User;
 use App\Lead;
 use App\LeadFollowUp;
+use App\LeadStatus;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -41,10 +42,12 @@ class LeadApiController extends BaseController
             ->where('leads.agent_id', $agentId)
             ->count();
         }
-        $todaysFollowups = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'),Carbon::today()->format('Y-m-d'))
+        $todaysFollowupdetails = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'),Carbon::today()->format('Y-m-d'))
         ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
         ->where('leads.next_follow_up', 'yes')
-        ->where('leads.agent_id', $agentId)->count();
+        ->where('leads.agent_id', $agentId)->get();
+
+        $todaysFollowups = $todaysFollowupdetails->count();
     
         $followupsDetails = LeadFollowUp::join('leads','lead_follow_up.lead_id','leads.id')
         ->where('leads.agent_id', $agentId)
@@ -58,6 +61,7 @@ class LeadApiController extends BaseController
             'pendingLeadFollowUps'=>$pendingLeadFollowUps,
             'todaysFollowups' => $todaysFollowups,
             'followupsDetails' => $followupsDetails,
+            'todaysFollowupdetails' => $todaysFollowupdetails,
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
@@ -68,7 +72,7 @@ class LeadApiController extends BaseController
         $lead->company_name = $request->company_name;
         $lead->address = $request->address;
         $lead->client_name = $request->client_name;
-        $lead->status_id = 1;
+        $lead->status_id = $leadStatus->id;
         $lead->client_email = $request->email;
         $lead->mobile = $request->mobile;
         $lead->note = $request->feedback;
@@ -76,8 +80,15 @@ class LeadApiController extends BaseController
         $lead->next_follow_up = ($request->next_follow_up) ? $request->next_follow_up : 'yes';
         $lead->value = ($request->value) ? $request->value : 0;
         $lead->column_priority = 0; 
-        // $lead->save();
-        return $this->sendResponse($lead, 'User login successfully.');
+        $lead->agent_id = $request->agent_id;
+        if ($lead->save()) {
+            return ('jkhjjkhd');
+            // Return a simple JSON response instead of sendResponse for testing
+            return response()->json(['success' => true, 'message' => 'Lead created successfully', 'data' => $lead], 200);
+        } else {
+            // Return an error if saving fails
+            return response()->json(['error' => 'Failed to save the lead'], 500);
+        }
        
     }    
     public function getPendingDetails()
