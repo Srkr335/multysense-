@@ -50,6 +50,24 @@ class LeadApiController extends BaseController
         ->where('leads.agent_id', $agentId)
         ->select('lead_follow_up.*', 'leads.*', 'lead_follow_up.created_at as followup_created_at') 
         ->get();
+        $followupsLeadList = Lead::with('follow')->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
+       ->leftJoin('lead_follow_up', 'leads.id', '=', 'lead_follow_up.lead_id')
+       ->where('leads.agent_id', $agentId)
+       ->select('leads.*', 'lead_status.type as status_type','lead_follow_up.created_at as followup_created_at') 
+       ->groupBy('leads.id')
+       ->get(); 
+
+
+       $pendingLeadlist = [];
+       $confirmedLeadList = [];
+
+       foreach ($followupsLeadList as $lead) {
+        if ($lead->status_type == 'pending' || $lead->status_type == 'inprocess') {
+                $pendingLeadlist[] = $lead;
+            } elseif ($lead->status_type == 'converted') {
+             $confirmedLeadList[] = $lead;
+             }
+          }
             
         return $this->sendResponse([
             'totalLeads' => $totalLeads,
@@ -58,6 +76,8 @@ class LeadApiController extends BaseController
             'todaysFollowups' => $todaysFollowups,
             'followupsDetails' => $followupsDetails,
             'todaysFollowupdetails' => $todaysFollowupdetails,
+            'pendingLeadCount' => count($pendingLeadlist), 
+            'confirmedLeadCount' => count($confirmedLeadList), 
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
@@ -78,7 +98,6 @@ class LeadApiController extends BaseController
                 'value' => ($request->value) ? $request->value : 0,
                 'column_priority' => 0,
                 'agent_id' => $request->agent_id,
-                'company_id' => auth()->user()->company_id
             ]);
         
             return response()->json(['success' => true, 'message' => 'Lead created successfully', 'data' => $lead], 200);
@@ -110,8 +129,6 @@ class LeadApiController extends BaseController
           return $this->sendResponse([
             'pendingLeadlist' => $pendingLeadlist,
             'confirmedLeadList' => $confirmedLeadList,
-            'pendingLeadCount' => count($pendingLeadlist), 
-            'confirmedLeadCount' => count($confirmedLeadList), 
         ], 'Leads fetch successful.');
     }
     public function update_lead(Request $request,$id)
