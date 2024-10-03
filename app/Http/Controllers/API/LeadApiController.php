@@ -62,8 +62,7 @@ class LeadApiController extends BaseController
     }
     public function add_new_lead(Request $request)
     {
-        
-        try {
+
             $leadStatus = LeadStatus::where('default', '1')->first();
         
             $lead = Lead::create([
@@ -79,13 +78,10 @@ class LeadApiController extends BaseController
                 'value' => ($request->value) ? $request->value : 0,
                 'column_priority' => 0,
                 'agent_id' => $request->agent_id,
+                'company_id' => auth()->user()->company_id
             ]);
         
             return response()->json(['success' => true, 'message' => 'Lead created successfully', 'data' => $lead], 200);
-        
-        } catch (\Exception $e) {
-            return response()->json(['success' => true, 'message' => 'Lead created successfully'], 200);
-        }        
        
     }    
     public function getPendingDetails()
