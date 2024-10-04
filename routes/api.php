@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthApiController;
 use App\Http\Controllers\API\DashboardApiController;
 use App\Http\Controllers\API\LeadApiController;
+use App\Http\Controllers\API\TaskApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,6 +31,11 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('update-lead-profile/{id}',[LeadApiController::class,'update_lead']);
     Route::post('add-follow-up',[LeadApiController::class,'add_follow_up']);
     Route::get('lead-details/{id}',[LeadApiController::class,'getLeadDetails']);
+    Route::post('update-followup-status/{id}',[LeadApiController::class,'update_followup_status']);
 
+     // task
+     Route::get('get-tasks',[TaskApiController::class,'get_tasks']);
+
+  
 
 });
