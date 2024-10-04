@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('get_dashboard_data/{id}',[DashboardApiController::class,'getDashboardData']);
     Route::get('lead-list',[LeadApiController::class,'getLeads']);
     Route::get('get-pendingandconfirm-lead',[LeadApiController::class,'getPendingDetails']);
+    Route::get('get-lead-agent/{id}',[LeadApiController::class,'getLeadAgent']);
     Route::post('add-new-lead',[LeadApiController::class,'add_new_lead']);
     Route::post('update-lead-profile/{id}',[LeadApiController::class,'update_lead']);
     Route::post('add-follow-up',[LeadApiController::class,'add_follow_up']);

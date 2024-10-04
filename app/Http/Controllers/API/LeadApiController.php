@@ -199,4 +199,14 @@ class LeadApiController extends BaseController
             'data' => $updateLeadStatus, 
         ],200);
     }
+    public function getLeadAgent($id)
+    {
+        $leadAgent = LeadAgent::where('user_id',$id)->first();
+        $agentId = $leadAgent->id;
+        return response()->json([
+            'message' => 'Lead agent fetch successful!',
+            'agentId' => $agentId, 
+        ],200);
+
+    }
 }
