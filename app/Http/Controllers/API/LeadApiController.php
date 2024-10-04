@@ -157,10 +157,11 @@ class LeadApiController extends BaseController
     }
     public function add_follow_up(Request $request)
     {
+        $nextFollowup = date('Y-m-d H:i:s', strtotime($request->next_followup_date));
         $addFollowup = new LeadFollowUp();
         $addFollowup->lead_id = $request->lead_id;
         $addFollowup->remark = $request->description;
-        $addFollowup->next_follow_up_date = date('Y-m-d', strtotime($request->next_followup_date));
+        $addFollowup->next_follow_up_date = $nextFollowup;
         $addFollowup->save();
         $leadStatus = Lead::where('id',$request->lead_id)->update([
             'status_id' => $request->status,
@@ -186,5 +187,16 @@ class LeadApiController extends BaseController
              'leadFollowupDetails' =>$leadFollowupDetails,
         ], 200);
         
+    }
+    public function update_followup_status(Request $request,$id)
+    {
+        $updateLeadStatus = Lead::findOrFail($id);
+        $updateLeadStatus->update([
+            'status_id' => $request->lead_status,
+        ]);
+        return response()->json([
+            'message' => 'Lead status updated successful!',
+            'data' => $updateLeadStatus, 
+        ],200);
     }
 }
