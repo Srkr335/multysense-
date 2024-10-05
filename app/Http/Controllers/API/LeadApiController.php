@@ -22,8 +22,11 @@ class LeadApiController extends BaseController
         $agentId = ($agent) ? $agent->id : '';
 
         if (!auth()->user()->cans('view_lead')) {
-            $totalLeads = Lead::where('leads.agent_id', $agentId)
-            ->select('leads.*','leads.created_at as leads_created_at')
+            $totalLeads = Lead::
+            leftjoin('lead_follow_up','lead_follow_up.lead_id','leads.id')
+            ->where('leads.agent_id', $agentId)
+            ->select('leads.*','lead_follow_up.id as followup_id','lead_follow_up.next_follow_up_date','leads.created_at as leads_created_at','lead_follow_up.created_at as followup_created_at')
+            ->groupBy('leads.id')
             ->get();
         } else {
             $totalLeads = Lead::all();
