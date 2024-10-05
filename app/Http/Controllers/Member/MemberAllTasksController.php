@@ -281,7 +281,7 @@ class MemberAllTasksController extends MemberBaseController
 
         $task->heading = $request->title;
         if ($request->description != '') {
-            $task->description = $request->description;
+            $task->description = strip_tags($request->description);
         }
         $task->start_date = Carbon::createFromFormat($this->global->date_format, $request->start_date)->format('Y-m-d');
         if ($request->has('without_duedate')) {
@@ -422,7 +422,7 @@ class MemberAllTasksController extends MemberBaseController
         $task = new Task();
         $task->heading = $request->title;
         if ($request->description != '') {
-            $task->description = $request->description;
+            $task->description = strip_tags($request->description);
         }
         $task->start_date = Carbon::createFromFormat($this->global->date_format, $request->start_date)->format('Y-m-d');
         if (!$request->has('without_duedate')) {

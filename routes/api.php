@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('update-followup-status/{id}',[LeadApiController::class,'update_followup_status']);
 
      // task
-     Route::get('get-tasks',[TaskApiController::class,'get_tasks']);
+     Route::get('get-tasks/{id}',[TaskApiController::class,'get_tasks']);
 
   
 
