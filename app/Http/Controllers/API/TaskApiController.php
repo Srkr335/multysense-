@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\TaskUser;
+use App\Task;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 
@@ -22,8 +23,16 @@ class TaskApiController extends BaseController
             'task' => $task,
         ],200);
     }
-    public function update_task_status($id)
+    public function update_task_status(Request $request,$id)
     {
-        return $id;
+        $updateTask = Task::where('id',$id)->update([
+            'board_column_id' => $request->status,
+            'completed_on' => date('Y-m-d H:i:s', strtotime($request->completed_on)),
+        ]);
+
+        return response()->json([
+            'message' => 'Task details fetched successfully!.',
+            'data' => $updateTask,
+        ],200);
     }
 }
