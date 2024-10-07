@@ -215,7 +215,7 @@ class LeadApiController extends BaseController
     public function viewStatusUpdate(Request $request,$id)
     {
         $followupHide = LeadFollowUp::where('id',$id)->update([
-            'is_hidden' => 1,
+            'is_hidden' => $request->status,
         ]);
         return response()->json([
             'message' => 'Follwup view status updated successfully!',

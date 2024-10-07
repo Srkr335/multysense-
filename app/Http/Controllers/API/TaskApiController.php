@@ -22,4 +22,8 @@ class TaskApiController extends BaseController
             'task' => $task,
         ],200);
     }
+    public function update_task_status($id)
+    {
+        return $id;
+    }
 }
