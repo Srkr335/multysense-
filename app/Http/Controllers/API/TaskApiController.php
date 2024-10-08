@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\TaskUser;
 use App\Task;
+use App\ProjectTimeLog;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 
@@ -31,8 +32,27 @@ class TaskApiController extends BaseController
         ]);
 
         return response()->json([
-            'message' => 'Task details fetched successfully!.',
+            'message' => 'Task updated successfully!.',
             'data' => $updateTask,
         ],200);
+    }
+    public function start_timer(Request $request)
+    {
+        $startTimer = new ProjectTimeLog();
+        $startTimer->company_id = $request->company_id;
+        $startTimer->project_id  = $request->project_id;
+        $startTimer->task_id  = $request->task_id;
+        $startTimer->user_id  = $request->user_id;
+        $startTimer->start_time = date('Y-m-d H:i:s', strtotime($request->start_time));
+        $startTimer->memo = $request->memo;
+        $startTimer->hourly_rate = 0;
+        $startTimer->earnings = 0;
+        $startTimer->is_started = 1;
+        $startTimer->save();
+        return response()->json([
+            'message' => 'Task started successfully!.',
+            'data' => $startTimer,
+        ],200);
+
     }
 }
