@@ -62,9 +62,8 @@ class TaskApiController extends BaseController
     public function task_timer_details($id)
     {
         $timerDetail = ProjectTimeLog::where('task_id',$id)->first();
-        return response()->json([
-            'message' => 'Task timer Detail fetched sucessfully!',
-            'data' => $timerDetail
-        ],200);
+        return $this->sendResponse([
+            'data' => $timerDetail,
+        ], 'Task timer Detail fetched sucessfully!');
     }
 }
