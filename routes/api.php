@@ -39,6 +39,8 @@ Route::middleware('auth:sanctum')->group( function () {
      Route::get('get-tasks/{id}',[TaskApiController::class,'get_tasks']);
      Route::post('update_task_status/{id}',[TaskApiController::class,'update_task_status']);
      Route::post('start-timer',[TaskApiController::class,'start_timer']);
+     Route::post('stop-timer',[TaskApiController::class,'stop_timer']);
+     Route::get('task-timer-details/{id}',[TaskApiController::class,'task_timer_details']);
 
   
 

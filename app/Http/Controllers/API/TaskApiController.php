@@ -55,4 +55,16 @@ class TaskApiController extends BaseController
         ],200);
 
     }
+    public function stop_timer()
+    {
+        return 'jkhjkhd';
+    }
+    public function task_timer_details($id)
+    {
+        $timerDetail = ProjectTimeLog::where('task_id',$id)->first();
+        return response()->json([
+            'message' => 'Task timer Detail fetched sucessfully!',
+            'data' => $timerDetail
+        ],200);
+    }
 }
