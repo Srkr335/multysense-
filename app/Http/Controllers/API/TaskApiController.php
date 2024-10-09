@@ -55,9 +55,15 @@ class TaskApiController extends BaseController
         ],200);
 
     }
-    public function stop_timer()
+    public function stop_timer(Request $request,$id,$taskId)
     {
-        return 'jkhjkhd';
+        $stopTimer = ProjectTimeLog::where('id',$id)->where('task_id',$taskId)->update([
+            'end_time' =>  date('Y-m-d H:i:s', strtotime($request->stop_time)),
+        ]);
+        return $this->sendResponse([
+            'data' => $stopTimer,
+        ], 'Task stopped sucessfully!');
+
     }
     public function task_timer_details($id)
     {
