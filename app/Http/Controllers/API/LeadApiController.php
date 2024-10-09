@@ -222,4 +222,10 @@ class LeadApiController extends BaseController
             'followupHide' => $followupHide,
         ],200);
     }
+    public function leadsFilter($statusId)
+    {
+        return $statusId;
+        $status = $request->input('status'); 
+
+    }
 }
