@@ -27,7 +27,9 @@ class LeadApiController extends BaseController
             ->where('leads.agent_id', $agentId)
             ->select('leads.*','lead_follow_up.id as followup_id','lead_follow_up.next_follow_up_date','leads.created_at as leads_created_at','lead_follow_up.created_at as followup_created_at')
             ->groupBy('leads.id')
+            ->orderBy('leads.id','DESC')
             ->get();
+            return  $totalLeads;
         } else {
             $totalLeads = Lead::all();
         }
@@ -183,7 +185,9 @@ class LeadApiController extends BaseController
         $leadDetail = Lead::where('leads.agent_id', $agentId)->find($id);
         $leadFollowupDetails = LeadFollowUp::where('lead_id',$id)
         ->select('lead_follow_up.*','lead_follow_up.created_at as followup_created_at')
+        ->orderBy('lead_follow_up.id','DESC')
         ->get();
+    
         return response()->json([
             'message' => 'Lead Details fetch successful!',
             'data' => $leadDetail, 
