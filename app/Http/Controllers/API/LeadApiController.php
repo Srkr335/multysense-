@@ -29,7 +29,6 @@ class LeadApiController extends BaseController
             ->groupBy('leads.id')
             ->orderBy('leads.id','DESC')
             ->get();
-            return  $totalLeads;
         } else {
             $totalLeads = Lead::all();
         }
