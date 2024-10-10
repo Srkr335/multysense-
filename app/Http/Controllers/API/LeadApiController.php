@@ -22,13 +22,26 @@ class LeadApiController extends BaseController
         $agentId = ($agent) ? $agent->id : '';
 
         if (!auth()->user()->cans('view_lead')) {
-            $totalLeads = Lead::
-            leftjoin('lead_follow_up','lead_follow_up.lead_id','leads.id')
-            ->where('leads.agent_id', $agentId)
-            ->select('leads.*','lead_follow_up.id as followup_id','lead_follow_up.next_follow_up_date','leads.created_at as leads_created_at','lead_follow_up.created_at as followup_created_at')
-            ->groupBy('leads.id')
-            ->orderBy('leads.id','DESC')
-            ->get();
+        $totalLeads = Lead::leftjoin('lead_follow_up', 'lead_follow_up.lead_id', 'leads.id')
+    ->where('leads.agent_id', $agentId)
+    ->select('leads.*', 'lead_follow_up.id as followup_id', 'lead_follow_up.next_follow_up_date', 'leads.created_at as leads_created_at', 'lead_follow_up.created_at as followup_created_at')
+    ->groupBy('leads.id')
+    ->orderBy('leads.id', 'DESC');
+
+if ($request->from_date && $request->to_date) {
+    $totalLeads = $totalLeads->whereBetween('leads.created_at', [$request->from_date, $request->to_date]);
+}
+
+if ($request->status_id) {
+    $totalLeads = $totalLeads->where('leads.status_id', $request->status_id);
+}
+
+if ($request->lead_type) {
+    $totalLeads = $totalLeads->where('leads.lead_type', $request->lead_type);
+}
+
+$totalLeads = $totalLeads->get();
+
         } else {
             $totalLeads = Lead::all();
         }
@@ -72,6 +85,7 @@ class LeadApiController extends BaseController
              $confirmedLeadList[] = $lead;
              }
           }
+
             
         return $this->sendResponse([
             'totalLeads' => $totalLeads,
@@ -224,11 +238,5 @@ class LeadApiController extends BaseController
             'message' => 'Follwup view status updated successfully!',
             'followupHide' => $followupHide,
         ],200);
-    }
-    public function leadsFilter($statusId)
-    {
-        return $statusId;
-        $status = $request->input('status'); 
-
     }
 }
