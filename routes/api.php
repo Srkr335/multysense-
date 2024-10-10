@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('add-new-lead',[LeadApiController::class,'add_new_lead']);
     Route::post('update-lead-profile/{id}',[LeadApiController::class,'update_lead']);
     Route::post('add-follow-up',[LeadApiController::class,'add_follow_up']);
-    Route::get('lead-details',[LeadApiController::class,'getLeadDetails']);
+    Route::get('lead-details/{id}',[LeadApiController::class,'getLeadDetails']);
     Route::post('update-followup-status/{id}',[LeadApiController::class,'update_followup_status']);
     Route::post('followup-view-status/{id}',[LeadApiController::class,'viewStatusUpdate']);
     Route::get('get-filters/{status_id}',[LeadApiController::class,'leadsFilter']);
