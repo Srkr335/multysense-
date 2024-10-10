@@ -25,11 +25,15 @@ class LeadApiController extends BaseController
         $totalLeads = Lead::leftjoin('lead_follow_up', 'lead_follow_up.lead_id', 'leads.id')
     ->where('leads.agent_id', $agentId)
     ->select('leads.*', 'lead_follow_up.id as followup_id', 'lead_follow_up.next_follow_up_date', 'leads.created_at as leads_created_at', 'lead_follow_up.created_at as followup_created_at')
-    ->groupBy('leads.id')
-    ->orderBy('leads.id', 'DESC');
+    ->groupBy('leads.id');
+    // ->orderBy('leads.id', 'DESC');
+    if($request->sort)
+    {
+        $totalLeads = $totalLeads->orderBy('leads.created_at', $request->sort);
+    }
 
 if ($request->from_date && $request->to_date) {
-    $totalLeads = $totalLeads->whereBetween('leads.created_at', [$request->from_date, $request->to_date]);
+    $totalLeads = $totalLeads->whereBetween('leads.created_at', [Carbon::parse($request->from_date)->format('Y-m-d'),Carbon::parse($request->to_date)->format('Y-m-d')]);
 }
 
 if ($request->status_id) {
