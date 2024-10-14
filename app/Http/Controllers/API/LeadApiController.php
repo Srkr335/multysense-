@@ -35,6 +35,9 @@ class LeadApiController extends BaseController
 if ($request->from_date && $request->to_date) {
     $totalLeads = $totalLeads->whereBetween('leads.created_at', [Carbon::parse($request->from_date)->format('Y-m-d'),Carbon::parse($request->to_date)->format('Y-m-d')]);
 }
+if ($request->from_date) {
+    $totalLeads = $totalLeads->whereDate('leads.created_at', Carbon::parse($request->from_date)->format('Y-m-d'));
+}
 
 if ($request->status_id) {
     $totalLeads = $totalLeads->where('leads.status_id', $request->status_id);
