@@ -163,6 +163,19 @@
                                 </div>
 
                             </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">@lang('app.status')</label>
+                                        <select class="form-control" name="status" id="status">
+                                            <option value="unpaid">@lang('modules.invoices.unpaid')</option>
+                                            <option value="paid">@lang('modules.invoices.paid')</option>
+                                            <option value="partial">@lang('modules.invoices.partial')</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class="col-md-4">

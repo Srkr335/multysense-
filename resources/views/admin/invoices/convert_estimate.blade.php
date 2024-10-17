@@ -124,21 +124,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="control-label">@lang('modules.invoices.currency')</label>
-                                        <select class="form-control" name="currency_id" id="currency_id">
-                                            @foreach($currencies as $currency)
-                                                <option
-                                                        @if($invoice->currency_id == $currency->id) selected
-                                                        @endif
-                                                        value="{{ $currency->id }}">{{ $currency->currency_symbol.' ('.$currency->currency_code.')' }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                </div>
                                 <div class="col-md-4">
 
                                     <div class="form-group">
@@ -164,6 +152,33 @@
                                             <input type="text" class="form-control" name="due_date" id="due_date"
                                                    value="{{ $invoice->valid_till->format($global->date_format) }}">
                                         </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">@lang('modules.invoices.currency')</label>
+                                        <select class="form-control" name="currency_id" id="currency_id">
+                                            @foreach($currencies as $currency)
+                                                <option
+                                                        @if($invoice->currency_id == $currency->id) selected
+                                                        @endif
+                                                        value="{{ $currency->id }}">{{ $currency->currency_symbol.' ('.$currency->currency_code.')' }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">@lang('app.status')</label>
+                                        <select class="form-control" name="status" id="status">
+                                            <option value="unpaid">@lang('modules.invoices.unpaid')</option>
+                                            <option value="paid">@lang('modules.invoices.paid')</option>
+                                            <option value="partial">@lang('modules.invoices.partial')</option>
+                                        </select>
                                     </div>
 
                                 </div>

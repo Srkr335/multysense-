@@ -189,7 +189,7 @@ class EstimatesDataTable extends BaseDataTable
             __('app.id') => ['data' => 'id', 'name' => 'id', 'visible' => false],
             '#' => ['data' => 'DT_RowIndex', 'orderable' => false, 'searchable' => false],
             __('modules.client.companyName') => ['data' => 'company_name', 'name' => 'client_details.company_name','visible' => false],
-            __('app.estimate') . '#' => ['data' => 'original_estimate_number', 'name' => 'original_estimate_number', 'searchable' => false],
+            __('app.estimate') . '#' => ['data' => 'original_estimate_number', 'name' => 'estimate_number', 'searchable' => true],
             __('app.client')  => ['data' => 'name', 'name' => 'client_details.name'],
             __('modules.invoices.total') => ['data' => 'total', 'name' => 'total'],
             __('modules.estimates.validTill') => ['data' => 'valid_till', 'name' => 'valid_till'],
