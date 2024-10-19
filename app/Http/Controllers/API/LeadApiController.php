@@ -24,7 +24,7 @@ class LeadApiController extends BaseController
         if (!auth()->user()->cans('view_lead')) {
         $totalLeads = Lead::leftjoin('lead_follow_up', 'lead_follow_up.lead_id', 'leads.id')
     ->where('leads.agent_id', $agentId)
-    ->select('leads.*', 'lead_follow_up.id as followup_id', 'lead_follow_up.next_follow_up_date', 'leads.created_at as leads_created_at', 'lead_follow_up.created_at as followup_created_at')
+    ->select('leads.*', 'lead_follow_up.id as followup_id', 'lead_follow_up.next_follow_up_date', 'leads.created_at as leads_created_at', 'lead_follow_up.created_at as followup_created_at','lead_follow_up.remark as next_folloup_remark')
     ->groupBy('leads.id');
     // ->orderBy('leads.id', 'DESC');
     if($request->sort)
@@ -74,6 +74,12 @@ $totalLeads = $totalLeads->get();
         ->where('leads.agent_id', $agentId)
         ->select('lead_follow_up.*', 'leads.*', 'lead_follow_up.created_at as followup_created_at') 
         ->get();
+        $nextFollowupsDetails = LeadFollowUp::join('leads', 'lead_follow_up.lead_id', '=', 'leads.id')
+        ->where('leads.agent_id', $agentId)
+        ->whereDate('lead_follow_up.next_follow_up_date','>=',Carbon::today()) // Filter by current date
+        ->select('lead_follow_up.*', 'leads.*', 'lead_follow_up.created_at as followup_created_at')
+        ->orderBy('lead_follow_up.next_follow_up_date', 'asc')
+        ->get();
         $followupsLeadList = Lead::with('follow')->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
        ->leftJoin('lead_follow_up', 'leads.id', '=', 'lead_follow_up.lead_id')
        ->where('leads.agent_id', $agentId)
@@ -103,6 +109,7 @@ $totalLeads = $totalLeads->get();
             'todaysFollowupdetails' => $todaysFollowupdetails,
             'pendingLeadCount' => count($pendingLeadlist), 
             'confirmedLeadCount' => count($confirmedLeadList), 
+            'nextFollowupsDetails' => $nextFollowupsDetails,
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
