@@ -102,4 +102,9 @@ class AuthApiController extends BaseController
         ]);
         return $request->all();
     }
+    public function delete(Request $request)
+    {
+        return $this->sendResponse($request, 'User deleted successfully.');
+
+    }
 }
