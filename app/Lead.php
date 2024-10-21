@@ -43,6 +43,12 @@ class Lead extends BaseModel
     {
         return $this->hasMany(LeadFollowUp::class,'lead_id');
     }
+    public function nextFollow()
+    {
+        return $this->hasMany(LeadFollowUp::class,'lead_id')->where('next_follow_up_date','>=',\Carbon\Carbon::now())
+        ->select('lead_follow_up.*','lead_follow_up.next_follow_up_date', 'lead_follow_up.created_at as followup_created_at','lead_follow_up.remark as next_folloup_remark')
+        ->orderBy('next_follow_up_date','asc');
+    }
 
     public function files()
     {
