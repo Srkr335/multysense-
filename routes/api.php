@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('lead-details/{id}',[LeadApiController::class,'getLeadDetails']);
     Route::post('update-followup-status/{id}',[LeadApiController::class,'update_followup_status']);
     Route::post('followup-view-status/{id}',[LeadApiController::class,'viewStatusUpdate']);
-    Route::post('delete_user',[AuthApiController::class,'delete']);
+    Route::get('delete_user',[AuthApiController::class,'delete']);
 
      // task
      Route::get('get-tasks/{id}',[TaskApiController::class,'get_tasks']);
