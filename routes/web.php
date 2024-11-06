@@ -357,6 +357,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::get('clients/create/{clientID?}', ['uses' => 'ManageClientsController@create'])->name('clients.create');
                 Route::resource('clients', 'ManageClientsController', ['except' => ['create']]);
                 Route::post('clients/getSubcategory', ['uses' => 'ManageClientsController@getSubcategory'])->name('clients.getSubcategory');
+                Route::resource('agents', 'ManageAgentsController');
 
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');

@@ -252,4 +252,17 @@ $totalLeads = $totalLeads->get();
             'followupHide' => $followupHide,
         ],200);
     }
+    public function updateCallStatus(Request $request)
+    {
+        $leadId = $request->lead_id;
+        $agentId = $request->agent_id;
+        $updatecallStatus = Lead::where('id',$leadId)->where('agent_id',$agentId)->first();
+        $updatecallStatus->update([
+            'call_status' => $request->status,
+        ]);
+        return response()->json([
+            'message' => 'Lead call status updated successful!',
+            'data' => $updatecallStatus, 
+        ],200);
+    }
 }
