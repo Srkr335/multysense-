@@ -118,13 +118,14 @@ class LeadsDataTable extends BaseDataTable
             })
             ->editColumn('call_status', function ($row) {
                 if ($row->call_status == 1) {
-                    return 'Called';
+                    return '<button class="btn btn-success">Called</button>';
                 } elseif ($row->call_status == 0) {
-                    return 'Not Called';
+                    return '<button class="btn btn-danger">Not Called</button>';
                 } else {
                     return '--';
                 }
-            })            
+            })->rawColumns(['call_status']) // This line allows HTML output in the call_status column
+                        
             ->editColumn('client_email', function ($row) {
                 if ($row->client_email != null && $row->client_email != '') {
                     return ($row->client_email);

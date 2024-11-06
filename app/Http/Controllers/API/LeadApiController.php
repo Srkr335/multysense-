@@ -262,7 +262,6 @@ $totalLeads = $totalLeads->get();
         ]);
         return response()->json([
             'message' => 'Lead call status updated successful!',
-            'data' => $updatecallStatus, 
         ],200);
     }
 }
