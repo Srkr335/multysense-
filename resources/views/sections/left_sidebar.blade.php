@@ -172,6 +172,9 @@
             @if(in_array('clients',$modules))
                 <li><a href="{{ route('admin.clients.index') }}" class="waves-effect"><i class="icon-people fa-fw"></i><span class="hide-menu">@lang('app.menu.clients')</span></a> </li>
             @endif
+            @if(in_array('clients',$modules))
+                <li><a href="{{ route('admin.agents.index') }}" class="waves-effect"><i class="icon-people fa-fw"></i><span class="hide-menu">@lang('app.menu.agents')</span></a> </li>
+            @endif
             @if(in_array('employees', $modules) || in_array('attendance', $modules) || in_array('holidays', $modules) || in_array('leaves', $modules))
                 <li><a href="{{ route('admin.employees.index') }}" class="waves-effect
                     {{ request()->is('admin/leave*') ? 'active' : '' }}

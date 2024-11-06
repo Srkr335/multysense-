@@ -116,6 +116,15 @@ class LeadsDataTable extends BaseDataTable
                 }
                 return '--';
             })
+            ->editColumn('call_status', function ($row) {
+                if ($row->call_status == 1) {
+                    return 'Called';
+                } elseif ($row->call_status == 0) {
+                    return 'Not Called';
+                } else {
+                    return '--';
+                }
+            })            
             ->editColumn('client_email', function ($row) {
                 if ($row->client_email != null && $row->client_email != '') {
                     return ($row->client_email);
@@ -145,7 +154,7 @@ class LeadsDataTable extends BaseDataTable
             ->removeColumn('next_follow_up')
             ->removeColumn('statusName')
             ->addIndexColumn()
-            ->rawColumns(['checkbox','status', 'action', 'client_name', 'next_follow_up_date', 'agent_name','mobile','client_email','whatsapp']);
+            ->rawColumns(['checkbox','status', 'action', 'client_name', 'next_follow_up_date', 'agent_name','call_status','mobile','client_email','whatsapp']);
     }
 
     /**
@@ -158,7 +167,7 @@ class LeadsDataTable extends BaseDataTable
     {
         $setting = company();
         $currentDate = Carbon::now()->timezone($setting->timezone)->format('Y-m-d H:i');
-        $lead = Lead::select('leads.id', 'leads.client_id', 'leads.mobile', 'leads.client_email', 'leads.next_follow_up', 'client_name', 'company_name', 'lead_status.type as statusName', 'status_id', 'leads.created_at', 'leads.value', 'lead_sources.type as source', 'users.name as agent_name', 'users.image',
+        $lead = Lead::select('leads.id', 'leads.client_id', 'leads.mobile','leads.call_status', 'leads.client_email', 'leads.next_follow_up', 'client_name', 'company_name', 'lead_status.type as statusName', 'status_id', 'leads.created_at', 'leads.value', 'lead_sources.type as source', 'users.name as agent_name', 'users.image',
             \DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' and next_follow_up_date >= '{$currentDate}' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"),\DB::raw("(select remark from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' and next_follow_up_date >= '{$currentDate}' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_remark"),
             \DB::raw("(select follow.next_follow_up_date as pending_follow_up from lead_follow_up as follow where follow.lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date desc limit 1) as pending_follow_up"))
             ->leftJoin('lead_status', 'lead_status.id', 'leads.status_id')
@@ -262,6 +271,7 @@ class LeadsDataTable extends BaseDataTable
             __('modules.lead.nextFollowUp') => ['data' => 'next_follow_up_date', 'name' => 'next_follow_up_date', 'orderable' => false, 'searchable' => false],
             __('modules.lead.remarks') => ['data' => 'next_follow_up_remark', 'name' => 'next_follow_up_remark'],
             __('modules.lead.leadAgent') => ['data' => 'agent_name', 'name' => 'users.name'],
+            __('app.callstatus') => ['data' => 'call_status', 'name' => 'call_status'],
             __('modules.lead.client_email') => ['data' => 'client_email', 'name' => 'client_email'],
             __('app.mobile') => ['data' => 'mobile', 'name' => 'mobile'],
             __('app.whatsapp') => ['data' => 'whatsapp', 'name' => 'whatsapp'],
