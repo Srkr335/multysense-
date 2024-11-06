@@ -89,12 +89,18 @@ $totalLeads = $totalLeads->get();
 
 
        $pendingLeadlist = [];
+       $processLeadlist = [];
        $confirmedLeadList = [];
 
        foreach ($followupsLeadList as $lead) {
-        if ($lead->status_type == 'pending' || $lead->status_type == 'inprocess') {
+        if ($lead->status_type == 'pending') {
                 $pendingLeadlist[] = $lead;
-            } elseif ($lead->status_type == 'converted') {
+            } 
+            elseif($lead->status_type == 'inprocess')
+            {
+                $processLeadlist[] = $lead;
+            }
+            elseif ($lead->status_type == 'converted') {
              $confirmedLeadList[] = $lead;
              }
           }
@@ -108,6 +114,7 @@ $totalLeads = $totalLeads->get();
             'followupsDetails' => $followupsDetails,
             'todaysFollowupdetails' => $todaysFollowupdetails,
             'pendingLeadCount' => count($pendingLeadlist), 
+            'processLeadCount' => count($processLeadlist), 
             'confirmedLeadCount' => count($confirmedLeadList), 
         ], 'Leads fetch successful.');
     }
@@ -148,17 +155,24 @@ $totalLeads = $totalLeads->get();
 
 
        $pendingLeadlist = [];
+       $processLeadlist = [];
        $confirmedLeadList = [];
 
        foreach ($followupsLeadList as $lead) {
-        if ($lead->status_type == 'pending' || $lead->status_type == 'inprocess') {
+        if ($lead->status_type == 'pending') {
                 $pendingLeadlist[] = $lead;
-            } elseif ($lead->status_type == 'converted') {
+            } 
+            elseif($lead->status_type == 'inprocess')
+            {
+                $processLeadlist[] = $lead;
+            }
+            elseif ($lead->status_type == 'converted') {
              $confirmedLeadList[] = $lead;
              }
           }
           return $this->sendResponse([
             'pendingLeadlist' => $pendingLeadlist,
+            'processLeadlist' => $processLeadlist,
             'confirmedLeadList' => $confirmedLeadList,
         ], 'Leads fetch successful.');
     }
