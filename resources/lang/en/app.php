@@ -72,6 +72,8 @@ return array (
   'active' => 'Active',
   'clientName' => 'Client Name',
   'lead' => 'Lead',
+  'agent' => 'Agent',
+  'agentName' => 'Agent Name',
   'paymentOn' => 'Payment On',
   'amount' => 'Amount',
   'gateway' => 'Gateway',

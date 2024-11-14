@@ -81,6 +81,7 @@ class AuthApiController extends BaseController
             $success['email'] =  $user->email;
             $success['mobile'] =  $user->mobile;
             $success['image'] =  $user->image;
+            $success['company_id'] =  $user->company_id;
 
             return $this->sendResponse($success, 'User login successfully.');
 
