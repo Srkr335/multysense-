@@ -105,6 +105,7 @@ return array(
             'statusWiseTicket' => 'Status Wise Ticket',
             'channelWiseTicket' => 'Channel Wise Ticket',
             'upcomingPayments' => 'Upcoming Payments',
+            'totalAgents' => 'Tottal Agents'
         ),
     'client' =>
         array(
@@ -1068,6 +1069,7 @@ return array(
             'mobile' => 'Mobile',
             'updateTitle' => 'Update Lead Info',
             'addNewLead' => 'Add New Lead',
+            'addNewAgent' => 'Add New Agent',
             'viewDetails' => 'View Details',
             'leadSource' => 'Lead Source',
             'leadStatus' => 'Lead Status',

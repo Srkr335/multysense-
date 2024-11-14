@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\LeadAgent;
+use App\User;
+use App\DataTables\Admin\AgentsDataTable;
+use Yajra\DataTables\Facades\DataTables;
 
 class ManageAgentsController extends AdminBaseController
 {
@@ -11,15 +15,18 @@ class ManageAgentsController extends AdminBaseController
     {
         parent::__construct();
         $this->pageIcon = __('icon-people');
-        $this->pageTitle = 'app.lead';
+        $this->pageTitle = 'app.agent';
         $this->middleware(function ($request, $next) {
             abort_if(!in_array('leads', $this->user->modules), 403);
             return $next($request);
         });
     }
-    public function index()
+    public function index(AgentsDataTable $dataTable)
     {
-        return view('admin.agents.index');
+        $this->agents = LeadAgent::all();
+        $this->totalAgents = count($this->agents);
+        $this->employees = User::allEmployees();
+        return $dataTable->render('admin.agents.index', $this->data);
 
     }
 
@@ -41,7 +48,10 @@ class ManageAgentsController extends AdminBaseController
      */
     public function store(Request $request)
     {
-        //
+        $agent = new LeadAgent();
+        $agent->user_id = $request->agent_id;
+        $agent->save();
+        return redirect()->route('admin.agents.index');
     }
 
     /**
