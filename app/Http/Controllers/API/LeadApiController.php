@@ -278,4 +278,16 @@ $totalLeads = $totalLeads->get();
             'message' => 'Lead call status updated successful!',
         ],200);
     }
+    public function updateNotAnswer(Request $request)
+    {
+        $leadId = $request->lead_id;
+        $agentId = $request->agent_id;
+        $updateNotAnswer = Lead::where('id',$leadId)->where('agent_id',$agentId)->first();
+        $updateNotAnswer->update([
+            'not_answer' => $request->status,
+        ]);
+        return response()->json([
+            'message' => 'Call Not Answer status updated successful!',
+        ],200);
+    }
 }
