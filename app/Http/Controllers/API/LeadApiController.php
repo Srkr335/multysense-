@@ -46,6 +46,9 @@ if ($request->status_id) {
 if ($request->lead_type) {
     $totalLeads = $totalLeads->where('leads.lead_type', $request->lead_type);
 }
+if ($request->call_status) {
+    $totalLeads = $totalLeads->where('leads.call_status', $request->call_status);
+}
 
 $totalLeads = $totalLeads->get();
 
