@@ -320,7 +320,7 @@ $totalLeads = $totalLeads->get();
         {
             $leads->where('mobile', 'like', "%{$mobile}%");
         }
-        $searchResults = $leads->paginate(10);
+        $searchResults = $leads->get();
 
         return $this->sendResponse([
             'searchResults' => $searchResults,
