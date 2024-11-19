@@ -46,9 +46,6 @@ if ($request->status_id) {
 if ($request->lead_type) {
     $totalLeads = $totalLeads->where('leads.lead_type', $request->lead_type);
 }
-if ($request->call_status) {
-    $totalLeads = $totalLeads->where('leads.call_status', $request->call_status);
-}
 
 $totalLeads = $totalLeads->get();
 
@@ -144,7 +141,7 @@ $totalLeads = $totalLeads->get();
             return response()->json(['success' => true, 'message' => 'Lead created successfully', 'data' => $lead], 200);
        
     }    
-    public function getPendingDetails()
+    public function getPendingDetails(Request $request)
     {
         $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
         $agentId = ($agent) ? $agent->id : '';
@@ -162,17 +159,26 @@ $totalLeads = $totalLeads->get();
        $confirmedLeadList = [];
 
        foreach ($followupsLeadList as $lead) {
-        if ($lead->status_type == 'pending') {
-                $pendingLeadlist[] = $lead;
-            } 
-            elseif($lead->status_type == 'inprocess')
-            {
-                $processLeadlist[] = $lead;
+        if (isset($request->call_status)) {
+            if ($lead->call_status == $request->call_status) {
+                if ($lead->status_type == 'pending') {
+                    $pendingLeadlist[] = $lead;
+                } elseif ($lead->status_type == 'inprocess') {
+                    $processLeadlist[] = $lead;
+                } elseif ($lead->status_type == 'converted') {
+                    $confirmedLeadList[] = $lead;
+                }
             }
-            elseif ($lead->status_type == 'converted') {
-             $confirmedLeadList[] = $lead;
-             }
-          }
+        } else {
+            if ($lead->status_type == 'pending') {
+                $pendingLeadlist[] = $lead;
+            } elseif ($lead->status_type == 'inprocess') {
+                $processLeadlist[] = $lead;
+            } elseif ($lead->status_type == 'converted') {
+                $confirmedLeadList[] = $lead;
+            }
+        }
+    }    
           return $this->sendResponse([
             'pendingLeadlist' => $pendingLeadlist,
             'processLeadlist' => $processLeadlist,
