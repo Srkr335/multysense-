@@ -299,4 +299,31 @@ $totalLeads = $totalLeads->get();
             'message' => 'Call Not Answer status updated successful!',
         ],200);
     }
+    public function search_leads(Request $request)
+    {
+        $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
+        $agentId = ($agent) ? $agent->id : '';
+        
+        $leads = Lead::with('nextFollow')->leftjoin('lead_follow_up', 'lead_follow_up.lead_id', 'leads.id')
+        ->where('leads.agent_id', $agentId)
+        ->select('leads.*', 'lead_follow_up.id as followup_id','leads.created_at as leads_created_at')
+        ->groupBy('leads.id');
+
+        $name = $request->input('name');
+        $mobile = $request->input('phone_number');
+        
+        if($name)
+        {
+            $leads->where('client_name', 'like', "%{$name}%");
+        }
+        if($mobile)
+        {
+            $leads->where('mobile', 'like', "%{$mobile}%");
+        }
+        $searchResults = $leads->paginate(10);
+
+        return $this->sendResponse([
+            'searchResults' => $searchResults,
+        ], 'Leads search successful.');
+    }
 }

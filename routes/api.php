@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('delete_user',[AuthApiController::class,'delete']);
     Route::post('call-status',[LeadApiController::class,'updateCallStatus']);
     Route::post('update-not-answer',[LeadApiController::class,'updateNotAnswer']);
+    Route::get('search-leads',[LeadApiController::class,'search_leads']);
 
      // task
      Route::get('get-tasks/{id}',[TaskApiController::class,'get_tasks']);
