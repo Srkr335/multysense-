@@ -141,79 +141,79 @@ $totalLeads = $totalLeads->paginate(15);
             return response()->json(['success' => true, 'message' => 'Lead created successfully', 'data' => $lead], 200);
        
     }    
-    // public function getPendingDetails(Request $request)
-    // {
-    //     $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
-    //     $agentId = ($agent) ? $agent->id : '';
-
-    //     $followupsLeadList = Lead::with('follow')->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
-    //    ->leftJoin('lead_follow_up', 'leads.id', '=', 'lead_follow_up.lead_id')
-    //    ->where('leads.agent_id', $agentId)
-    //    ->select('leads.*', 'lead_status.type as status_type','lead_follow_up.created_at as followup_created_at') 
-    //    ->groupBy('leads.id')
-    //    ->get(); 
-
-
-    //    $pendingLeadlist = [];
-    //    $processLeadlist = [];
-    //    $confirmedLeadList = [];
-
-    //    foreach ($followupsLeadList as $lead) {
-    //     if (isset($request->call_status)) {
-    //         if ($lead->call_status == $request->call_status) {
-    //             if ($lead->status_type == 'pending') {
-    //                 $pendingLeadlist[] = $lead;
-    //             } elseif ($lead->status_type == 'inprocess') {
-    //                 $processLeadlist[] = $lead;
-    //             } elseif ($lead->status_type == 'converted') {
-    //                 $confirmedLeadList[] = $lead;
-    //             }
-    //         }
-    //     } else {
-    //         if ($lead->status_type == 'pending') {
-    //             $pendingLeadlist[] = $lead;
-    //         } elseif ($lead->status_type == 'inprocess') {
-    //             $processLeadlist[] = $lead;
-    //         } elseif ($lead->status_type == 'converted') {
-    //             $confirmedLeadList[] = $lead;
-    //         }
-    //     }
-    // }    
-    //       return $this->sendResponse([
-    //         'pendingLeadlist' => $pendingLeadlist,
-    //         'processLeadlist' => $processLeadlist,
-    //         'confirmedLeadList' => $confirmedLeadList,
-    //     ], 'Leads fetch successful.');
-    // }
     public function getPendingDetails(Request $request)
-{
-    $agentId = LeadAgent::where('user_id', auth()->user()->id)->value('id') ?? '';
+    {
+        $agent = LeadAgent::where('user_id', auth()->user()->id)->first();
+        $agentId = ($agent) ? $agent->id : '';
 
-    // Reusable function to fetch and paginate leads by status
-    $getLeadsByStatus = function ($status, $pageKey) use ($agentId, $request) {
-        return Lead::with('follow')
-            ->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
-            ->where('leads.agent_id', $agentId)
-            ->where('lead_status.type', $status)
-            ->when($request->has('call_status'), function ($query) use ($request) {
-                $query->where('call_status', $request->call_status);
-            })
-            ->select('leads.*', 'lead_status.type as status_type')
-            ->groupBy('leads.id')
-            ->paginate(10, ['*'], $pageKey, $request->input($pageKey, 1));
-    };
+        $followupsLeadList = Lead::with('follow')->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
+       ->leftJoin('lead_follow_up', 'leads.id', '=', 'lead_follow_up.lead_id')
+       ->where('leads.agent_id', $agentId)
+       ->select('leads.*', 'lead_status.type as status_type','lead_follow_up.created_at as followup_created_at') 
+       ->groupBy('leads.id')
+       ->get(); 
 
-    // Fetch leads with pagination
-    $pendingLeadlist = $getLeadsByStatus('pending', 'pending_page');
-    $processLeadlist = $getLeadsByStatus('inprocess', 'process_page');
-    $confirmedLeadList = $getLeadsByStatus('converted', 'confirmed_page');
 
-    return $this->sendResponse([
-        'pendingLeadlist' => $pendingLeadlist,
-        'processLeadlist' => $processLeadlist,
-        'confirmedLeadList' => $confirmedLeadList,
-    ], 'Leads fetch successful.');
-}
+       $pendingLeadlist = [];
+       $processLeadlist = [];
+       $confirmedLeadList = [];
+
+       foreach ($followupsLeadList as $lead) {
+        if (isset($request->call_status)) {
+            if ($lead->call_status == $request->call_status) {
+                if ($lead->status_type == 'pending') {
+                    $pendingLeadlist[] = $lead;
+                } elseif ($lead->status_type == 'inprocess') {
+                    $processLeadlist[] = $lead;
+                } elseif ($lead->status_type == 'converted') {
+                    $confirmedLeadList[] = $lead;
+                }
+            }
+        } else {
+            if ($lead->status_type == 'pending') {
+                $pendingLeadlist[] = $lead;
+            } elseif ($lead->status_type == 'inprocess') {
+                $processLeadlist[] = $lead;
+            } elseif ($lead->status_type == 'converted') {
+                $confirmedLeadList[] = $lead;
+            }
+        }
+    }    
+          return $this->sendResponse([
+            'pendingLeadlist' => $pendingLeadlist,
+            'processLeadlist' => $processLeadlist,
+            'confirmedLeadList' => $confirmedLeadList,
+        ], 'Leads fetch successful.');
+    }
+//     public function getPendingDetails(Request $request)
+// {
+//     $agentId = LeadAgent::where('user_id', auth()->user()->id)->value('id') ?? '';
+
+//     // Reusable function to fetch and paginate leads by status
+//     $getLeadsByStatus = function ($status, $pageKey) use ($agentId, $request) {
+//         return Lead::with('follow')
+//             ->leftJoin('lead_status', 'leads.status_id', '=', 'lead_status.id')
+//             ->where('leads.agent_id', $agentId)
+//             ->where('lead_status.type', $status)
+//             ->when($request->has('call_status'), function ($query) use ($request) {
+//                 $query->where('call_status', $request->call_status);
+//             })
+//             ->select('leads.*', 'lead_status.type as status_type')
+//             ->groupBy('leads.id')
+//             ->paginate(10, ['*'], $pageKey, $request->input($pageKey, 1));
+//     };
+
+//     // Fetch leads with pagination
+//     $pendingLeadlist = $getLeadsByStatus('pending', 'pending_page');
+//     $processLeadlist = $getLeadsByStatus('inprocess', 'process_page');
+//     $confirmedLeadList = $getLeadsByStatus('converted', 'confirmed_page');
+
+//     return $this->sendResponse([
+//         'pendingLeadlist' => $pendingLeadlist,
+//         'processLeadlist' => $processLeadlist,
+//         'confirmedLeadList' => $confirmedLeadList,
+//     ], 'Leads fetch successful.');
+// }
 
     public function update_lead(Request $request,$id)
     {
