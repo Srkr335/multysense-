@@ -47,7 +47,7 @@ if ($request->lead_type) {
     $totalLeads = $totalLeads->where('leads.lead_type', $request->lead_type);
 }
 
-$totalLeads = $totalLeads->paginate(15);
+$totalLeads = $totalLeads->get();
 
         } else {
             $totalLeads = Lead::all();
