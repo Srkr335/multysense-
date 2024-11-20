@@ -47,7 +47,7 @@ if ($request->lead_type) {
     $totalLeads = $totalLeads->where('leads.lead_type', $request->lead_type);
 }
 
-$totalLeads = $totalLeads->paginate(10);
+$totalLeads = $totalLeads->get();
 
         } else {
             $totalLeads = Lead::all();
@@ -116,12 +116,6 @@ $totalLeads = $totalLeads->paginate(10);
             'pendingLeadCount' => count($pendingLeadlist), 
             'processLeadCount' => count($processLeadlist), 
             'confirmedLeadCount' => count($confirmedLeadList), 
-            'pagination' => [
-                'current_page' => $totalLeads->currentPage(),
-                'total_pages' => $totalLeads->lastPage(),
-                'total_items' => $totalLeads->total(),
-                'per_page' => $totalLeads->perPage(),
-            ]
         ], 'Leads fetch successful.');
     }
     public function add_new_lead(Request $request)
