@@ -151,7 +151,8 @@ $totalLeads = $totalLeads->get();
        ->where('leads.agent_id', $agentId)
        ->select('leads.*', 'lead_status.type as status_type','lead_follow_up.created_at as followup_created_at') 
        ->groupBy('leads.id')
-       ->get(); 
+       ->get();
+ 
 
 
        $pendingLeadlist = [];
@@ -179,6 +180,9 @@ $totalLeads = $totalLeads->get();
             }
         }
     }    
+    usort($pendingLeadlist, function ($a, $b) {
+    return $b->id <=> $a->id; // Replace `id` with the column you want to sort by
+});
           return $this->sendResponse([
             'pendingLeadlist' => $pendingLeadlist,
             'processLeadlist' => $processLeadlist,
