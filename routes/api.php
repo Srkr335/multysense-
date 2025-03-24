@@ -37,7 +37,6 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::post('call-status',[LeadApiController::class,'updateCallStatus']);
     Route::post('update-not-answer',[LeadApiController::class,'updateNotAnswer']);
     Route::get('search-leads',[LeadApiController::class,'search_leads']);
-
      // task
      Route::get('get-tasks/{id}',[TaskApiController::class,'get_tasks']);
      Route::post('update_task_status/{id}',[TaskApiController::class,'update_task_status']);

@@ -42,6 +42,7 @@ class SuperAdminSettingsController extends SuperAdminBaseController
 
     public function update(UpdateGlobalSettings $request, $id)
     {
+        // dd($request->all());
         $setting = GlobalSetting::findOrFail($id);
         $oldCurrencyID = $setting->currency_id;
         $newCurrencyID = $request->input('currency_id');

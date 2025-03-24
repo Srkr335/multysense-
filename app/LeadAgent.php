@@ -27,5 +27,16 @@ class LeadAgent extends BaseModel
     {
         return $this->hasOne(Lead::class);
     }
+    public function userDetails()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function company()
+    {
+        return $this->hasOneThrough(Company::class, User::class, 'id', 'id', 'user_id', 'company_id');
+    }
+    
+
 
 }

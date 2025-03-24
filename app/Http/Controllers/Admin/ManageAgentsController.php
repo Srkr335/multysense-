@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\LeadAgent;
 use App\User;
-use App\DataTables\Admin\AgentsDataTable;
+use App\LeadAgent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+use App\DataTables\Admin\AgentsDataTable;
+use App\DataTables\Admin\AgentCorrespondingDataTable;
 
 class ManageAgentsController extends AdminBaseController
 {
@@ -23,7 +25,8 @@ class ManageAgentsController extends AdminBaseController
     }
     public function index(AgentsDataTable $dataTable)
     {
-        $this->agents = LeadAgent::all();
+        $this->agents = LeadAgent::with('userDetails')->get();
+        // dd( $this->agents);
         $this->totalAgents = count($this->agents);
         $this->employees = User::allEmployees();
         return $dataTable->render('admin.agents.index', $this->data);
@@ -97,5 +100,21 @@ class ManageAgentsController extends AdminBaseController
     public function destroy($id)
     {
         //
+    }
+    public function correspondingleads($id, AgentCorrespondingDataTable $dataTable)
+    {
+        // Set page title
+        $this->pageTitle = 'Corresponding Leads';
+        $this->data['pageTitle'] = $this->pageTitle;
+    
+        try {
+            // Pass the ID to DataTable and render the view
+            return $dataTable->with('id', $id)->render('admin.agents.corresponding', $this->data);
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Error rendering corresponding leads DataTable: ' . $e->getMessage());
+    
+            // Display a simple error page
+        }
     }
 }

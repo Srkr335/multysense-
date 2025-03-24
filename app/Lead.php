@@ -85,4 +85,16 @@ class Lead extends BaseModel
         return $this->client_email;
     }
 
+
+    public function agent()
+{
+    return $this->belongsTo(LeadAgent::class, 'agent_id');
+}
+
+public function company()
+{
+    return $this->belongsTo(Company::class, 'company_id');
+}
+
+
 }

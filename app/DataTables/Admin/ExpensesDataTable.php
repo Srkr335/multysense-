@@ -18,84 +18,84 @@ class ExpensesDataTable extends BaseDataTable
      * @param mixed $query Results from query() method.
      * @return \Yajra\DataTables\DataTableAbstract
      */
-    public function dataTable($query)
-    {
-        return datatables()
-            ->eloquent($query)
-            ->addColumn('action', function ($row) {
-                if (is_null($row->expenses_recurring_id)) {
-                    $action = '<div class="btn-group dropdown m-r-10">
-                 <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default dropdown-toggle waves-effect waves-light" type="button"><i class="fa fa-gears "></i></button>
-                <ul role="menu" class="dropdown-menu pull-right">
-                    <li><a href="javascript:;" data-expense-id="' . $row->id . '" class="view-expense"><i class="fa fa-search" aria-hidden="true"></i> ' . trans('app.view') . '</a></li>
-                    <li><a href="' . route('admin.expenses.edit', $row->id) . '"><i class="fa fa-pencil" aria-hidden="true"></i> ' . trans('app.edit') . '</a></li>
-                    <li><a href="javascript:;"  data-expense-id="' . $row->id . '" class="sa-params"><i class="fa fa-times" aria-hidden="true"></i> ' . trans('app.delete') . '</a></li>';
+    // public function dataTable($query)
+    // {
+    //     return datatables()
+    //         ->eloquent($query)
+    //         ->addColumn('action', function ($row) {
+    //             if (is_null($row->expenses_recurring_id)) {
+    //                 $action = '<div class="btn-group dropdown m-r-10">
+    //              <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default dropdown-toggle waves-effect waves-light" type="button"><i class="fa fa-gears "></i></button>
+    //             <ul role="menu" class="dropdown-menu pull-right">
+    //                 <li><a href="javascript:;" data-expense-id="' . $row->id . '" class="view-expense"><i class="fa fa-search" aria-hidden="true"></i> ' . trans('app.view') . '</a></li>
+    //                 <li><a href="' . route('admin.expenses.edit', $row->id) . '"><i class="fa fa-pencil" aria-hidden="true"></i> ' . trans('app.edit') . '</a></li>
+    //                 <li><a href="javascript:;"  data-expense-id="' . $row->id . '" class="sa-params"><i class="fa fa-times" aria-hidden="true"></i> ' . trans('app.delete') . '</a></li>';
 
-                    $action .= '</ul> </div>';
-                } else {
-                    $action = '<a href="javascript:;" title="' . __('app.view') . '" data-expense-id="' . $row->id . '" class="view-expense"><i class="fa fa-search" aria-hidden="true"></i> </a>';
-                }
-                return $action;
-            })
-            ->editColumn('project', function ($row) {
+    //                 $action .= '</ul> </div>';
+    //             } else {
+    //                 $action = '<a href="javascript:;" title="' . __('app.view') . '" data-expense-id="' . $row->id . '" class="view-expense"><i class="fa fa-search" aria-hidden="true"></i> </a>';
+    //             }
+    //             return $action;
+    //         })
+    //         ->editColumn('project', function ($row) {
 
-                if ($row->project_id != null && $row->project != null) {
-                    return '<a href="' . route('admin.projects.show', $row->project_id) . '">' . ucfirst($row->project_name) . '</a>';
-                }
+    //             if ($row->project_id != null && $row->project != null) {
+    //                 return '<a href="' . route('admin.projects.show', $row->project_id) . '">' . ucfirst($row->project_name) . '</a>';
+    //             }
 
-                return '--';
-            })
-            ->editColumn('item_name', function ($row) {
-                if (is_null($row->expenses_recurring_id)) {
-                    return '<a href="javascript:;" data-expense-id="' . $row->id . '" class="view-expense">' . $row->item_name . '</a>';
-                }
-                return '<a href="javascript:;" data-expense-id="' . $row->id . '" class="view-expense">' . $row->item_name . '</a> <label class="label label-info"> ' . __('app.recurring') . ' </label>';
-            })
-            ->editColumn('price', function ($row) {
-                if (!is_null($row->purchase_date)) {
-                    return $row->total_amount;
-                }
-                return '-';
-            })
-            ->editColumn('user_id', function ($row) {
-                return '<a href="' . route('admin.employees.show', $row->user_id) . '">' . ucwords($row->name) . '</a>';
-            })
-            ->editColumn('status', function ($row) {
-                $status = '<div class="btn-group dropdown">';
-                if ($row->status == 'pending') {
-                    $status .= '<button aria-expanded="true" data-toggle="dropdown" class="btn dropdown-toggle waves-effect waves-light btn-xs btn-warning" type="button">' . ucfirst($row->status) . ' <span class="caret"></span></button>';
-                } else if ($row->status == 'approved') {
-                    $status .= '<button aria-expanded="true" data-toggle="dropdown" class="btn dropdown-toggle waves-effect waves-light btn-xs btn-success" type="button">' . ucfirst($row->status) . ' <span class="caret"></span></button>';
-                } else {
-                    $status .= '<button aria-expanded="true" data-toggle="dropdown" class="btn dropdown-toggle waves-effect waves-light btn-xs btn-danger" type="button">' . ucfirst($row->status) . ' <span class="caret"></span></button>';
-                }
-                $status .= '<ul role="menu" class="dropdown-menu pull-right">';
-                $status .= '<li><a href="javascript:;" data-expense-id="' . $row->id . '" class="change-status" data-status="pending">' . __('app.pending') . '</a></li>';
-                $status .= '<li><a href="javascript:;" data-expense-id="' . $row->id . '" class="change-status" data-status="approved">' . __('app.approved') . '</a></li>';
-                $status .= '<li><a href="javascript:;" data-expense-id="' . $row->id . '" class="change-status" data-status="rejected">' . __('app.rejected') . '</a></li>';
-                $status .= '</ul>';
-                $status .= '</div>';
-                return $status;
-            })
-            ->addColumn('status_export', function ($row) {
-                return ucfirst($row->status);
-            })
-            ->editColumn(
-                'purchase_date',
-                function ($row) {
-                    if (!is_null($row->purchase_date)) {
-                        return $row->purchase_date->format($this->global->date_format);
-                    }
-                }
-            )
-            ->addIndexColumn()
-            ->rawColumns(['action', 'status', 'user_id', 'item_name', 'project'])
-            ->removeColumn('currency_id')
-            ->removeColumn('name')
-            ->removeColumn('currency_symbol')
-            ->removeColumn('updated_at')
-            ->removeColumn('created_at');
-    }
+    //             return '--';
+    //         })
+    //         ->editColumn('item_name', function ($row) {
+    //             if (is_null($row->expenses_recurring_id)) {
+    //                 return '<a href="javascript:;" data-expense-id="' . $row->id . '" class="view-expense">' . $row->item_name . '</a>';
+    //             }
+    //             return '<a href="javascript:;" data-expense-id="' . $row->id . '" class="view-expense">' . $row->item_name . '</a> <label class="label label-info"> ' . __('app.recurring') . ' </label>';
+    //         })
+    //         ->editColumn('price', function ($row) {
+    //             if (!is_null($row->purchase_date)) {
+    //                 return $row->total_amount;
+    //             }
+    //             return '-';
+    //         })
+    //         ->editColumn('user_id', function ($row) {
+    //             return '<a href="' . route('admin.employees.show', $row->user_id) . '">' . ucwords($row->name) . '</a>';
+    //         })
+    //         ->editColumn('status', function ($row) {
+    //             $status = '<div class="btn-group dropdown">';
+    //             if ($row->status == 'pending') {
+    //                 $status .= '<button aria-expanded="true" data-toggle="dropdown" class="btn dropdown-toggle waves-effect waves-light btn-xs btn-warning" type="button">' . ucfirst($row->status) . ' <span class="caret"></span></button>';
+    //             } else if ($row->status == 'approved') {
+    //                 $status .= '<button aria-expanded="true" data-toggle="dropdown" class="btn dropdown-toggle waves-effect waves-light btn-xs btn-success" type="button">' . ucfirst($row->status) . ' <span class="caret"></span></button>';
+    //             } else {
+    //                 $status .= '<button aria-expanded="true" data-toggle="dropdown" class="btn dropdown-toggle waves-effect waves-light btn-xs btn-danger" type="button">' . ucfirst($row->status) . ' <span class="caret"></span></button>';
+    //             }
+    //             $status .= '<ul role="menu" class="dropdown-menu pull-right">';
+    //             $status .= '<li><a href="javascript:;" data-expense-id="' . $row->id . '" class="change-status" data-status="pending">' . __('app.pending') . '</a></li>';
+    //             $status .= '<li><a href="javascript:;" data-expense-id="' . $row->id . '" class="change-status" data-status="approved">' . __('app.approved') . '</a></li>';
+    //             $status .= '<li><a href="javascript:;" data-expense-id="' . $row->id . '" class="change-status" data-status="rejected">' . __('app.rejected') . '</a></li>';
+    //             $status .= '</ul>';
+    //             $status .= '</div>';
+    //             return $status;
+    //         })
+    //         ->addColumn('status_export', function ($row) {
+    //             return ucfirst($row->status);
+    //         })
+    //         ->editColumn(
+    //             'purchase_date',
+    //             function ($row) {
+    //                 if (!is_null($row->purchase_date)) {
+    //                     return $row->purchase_date->format($this->global->date_format);
+    //                 }
+    //             }
+    //         )
+    //         ->addIndexColumn()
+    //         ->rawColumns(['action', 'status', 'user_id', 'item_name', 'project'])
+    //         ->removeColumn('currency_id')
+    //         ->removeColumn('name')
+    //         ->removeColumn('currency_symbol')
+    //         ->removeColumn('updated_at')
+    //         ->removeColumn('created_at');
+    // }
 
     /**
      * Get query source of dataTable.

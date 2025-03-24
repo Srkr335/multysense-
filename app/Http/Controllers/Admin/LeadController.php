@@ -28,6 +28,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\LeadsImport;
 
+
 class LeadController extends AdminBaseController
 {
 
@@ -53,7 +54,7 @@ class LeadController extends AdminBaseController
         $this->totalLeads = Lead::all()->count();
         $this->totalClientConverted = $this->totalClientConverted->count();
 
-        $this->pendingLeadFollowUps = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
+        $this->pendingLeadFollowUps = LeadFollowUp::where(DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
             ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
             ->where('leads.next_follow_up', 'yes')
             ->where('leads.company_id', company()->id)
@@ -208,7 +209,7 @@ class LeadController extends AdminBaseController
         $this->totalLeadsCount = $this->totalLeads->count();
         $this->totalClientConverted = $this->totalClientConverted->count();
 
-        $this->pendingLeadFollowUps = LeadFollowUp::where(\DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
+        $this->pendingLeadFollowUps = LeadFollowUp::where(DB::raw('DATE(next_follow_up_date)'), '<=', Carbon::today()->format('Y-m-d'))
             ->join('leads', 'leads.id', 'lead_follow_up.lead_id')
             ->where('leads.next_follow_up', 'yes')
             ->where('leads.company_id', company()->id)
@@ -413,7 +414,7 @@ class LeadController extends AdminBaseController
 
             $boardColumns = LeadStatus::with(['leads' => function ($q) use ($startDate, $endDate, $request) {
                 $q->with(['lead_agent', 'lead_agent.user'])
-                    ->select('leads.*', \DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"))
+                    ->select('leads.*', DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"))
                     ->groupBy('leads.id');
 
                 $q->where(function ($task) use ($startDate, $endDate) {
@@ -477,7 +478,7 @@ class LeadController extends AdminBaseController
 
             $boardColumns = LeadStatus::with(['leads' => function ($q) use ($startDate, $endDate, $request) {
                 $q->with(['lead_agent', 'lead_agent.user', 'currency'])
-                    ->select('leads.*', \DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"))
+                    ->select('leads.*', DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"))
                     ->groupBy('leads.id');
 
                 $q->where(function ($task) use ($startDate, $endDate) {
@@ -512,6 +513,7 @@ class LeadController extends AdminBaseController
 
         return back()->with('success', 'File imported successfully!');
     }
+
     public function bulkDelete(Request $request)
     {
         if ($request->has('ids')) {
@@ -525,4 +527,7 @@ class LeadController extends AdminBaseController
 
         return response()->json(['success' => false, 'message' => 'No records selected.']);
     }
+
+   
+
 }

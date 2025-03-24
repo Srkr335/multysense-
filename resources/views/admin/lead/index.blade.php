@@ -11,13 +11,16 @@
         <div class="col-lg-10 col-sm-10 col-md-10 col-xs-12 text-right bg-title-right">
         <button id="bulk-delete" class="btn btn-danger">@lang('modules.lead.bulkdelete')</button>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        <i class="fas fa-upload"></i>  @lang('modules.lead.upload') 
+        <i class="fas fa-upload"></i>  @lang('modules.lead.upload')
         </button>
+         
+
+
             <a href="{{ route('admin.leads.create') }}"
             class="btn btn-outline btn-success btn-sm">@lang('modules.lead.addNewLead') <i class="fa fa-plus" aria-hidden="true"></i></a>
-            
+
             <a href="{{ route('admin.leads.kanbanboard') }}" class="btn btn-outline btn-primary btn-sm">@lang('modules.lead.kanbanboard') </a>
-            
+
             <a href="{{ route('admin.lead-form.index') }}" class="btn btn-outline btn-inverse btn-sm">@lang('modules.lead.leadForm') <i class="fa fa-pencil"  aria-hidden="true"></i></a>
 
             <ol class="breadcrumb">
@@ -27,6 +30,7 @@
         </div>
         <!-- /.breadcrumb -->
     </div>
+    
 @endsection
 
 @push('head-script')
@@ -69,10 +73,10 @@
 
         <div class="col-xs-12">
             <div class="white-box">
-                
+
                 @section('filter-section')
                 <div class="row" id="ticket-filters">
-                    
+
                     <form action="" id="filter-form">
                         <div class="col-xs-12">
                             <h5 >@lang('app.followUp')</h5>

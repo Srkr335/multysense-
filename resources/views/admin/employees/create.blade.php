@@ -207,13 +207,13 @@
                                                 <label class="control-label">@lang('modules.emailSettings.emailNotifications')</label>
                                             </div>
                                             <div class="radio radio-inline">
-                                                <input type="radio" checked name="email_notifications" id="email_notifications1" value="1">
+                                                <input type="radio"  name="email_notifications" id="email_notifications1" value="1">
                                                 <label for="email_notifications1" class="">
                                                     @lang('app.enable') </label>
     
                                             </div>
                                             <div class="radio radio-inline ">
-                                                <input type="radio" name="email_notifications"
+                                                <input type="radio" checked name="email_notifications"
                                                        id="email_notifications2" value="0">
                                                 <label for="email_notifications2" class="">
                                                     @lang('app.disable') </label>

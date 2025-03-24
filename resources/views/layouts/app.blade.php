@@ -10,8 +10,8 @@
     <meta name="author" content="">
 
     <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ $superadmin->favicon_url }}">
-    {{--<link rel="manifest" href="{{ asset('favicon/manifest.json') }}">--}}
+    {{-- <link rel="icon" type="image/png" sizes="16x16" href="{{ $superadmin->favicon_url }}"> --}}
+    <link rel="manifest" href="{{ asset('favicon/manifest.json') }}">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="{{ $superadmin->favicon_url }}">
     <meta name="theme-color" content="#ffffff">

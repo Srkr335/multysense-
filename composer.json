@@ -53,7 +53,7 @@
         "twilio/sdk": "^6.8",
         "tymon/jwt-auth": "^1.0.0",
         "unicodeveloper/laravel-paystack": "^1.0",
-        "yajra/laravel-datatables-buttons": "~4.6",
+        "yajra/laravel-datatables-buttons": "^4.13",
         "yajra/laravel-datatables-html": "~4.4",
         "yajra/laravel-datatables-oracle": "^9.0"
     },

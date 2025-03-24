@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,7 +37,6 @@ Route::get('/taskboard/{encrypt}', ['uses' => '\App\Http\Controllers\Front\HomeC
 Route::get('/taskboard-data', ['uses' => '\App\Http\Controllers\Front\HomeController@taskBoardData'])->name('front.taskBoardData');
 Route::get('/task-detail/{id}/{companyId}', ['uses' => '\App\Http\Controllers\Front\HomeController@taskDetail'])->name('front.task-detail');
 Route::get('/task-detail/history/{id}/{companyId}', ['uses' => '\App\Http\Controllers\Front\HomeController@history'])->name('front.task-history');
-
 Route::get('/invoice/{id}', ['uses' => '\App\Http\Controllers\Front\HomeController@invoice'])->name('front.invoice');
 Route::get('/', ['uses' => '\App\Http\Controllers\Front\HomeController@index'])->name('front.home')->middleware('disable-frontend');
 Route::get('page/{slug?}', ['uses' => '\App\Http\Controllers\Front\HomeController@page'])->name('front.page');
@@ -67,7 +68,6 @@ Route::group(
 Route::group(
     ['namespace' => 'Client', 'prefix' => 'client', 'as' => 'client.'],
     function () {
-
         Route::post('stripe/{invoiceId}', array('as' => 'stripe', 'uses' => 'StripeController@paymentWithStripe',));
         Route::post('stripe-public/{invoiceId}', array('as' => 'stripe-public', 'uses' => 'StripeController@paymentWithStripePublic',));
         // route for post request
@@ -99,8 +99,6 @@ Route::post('/save-razorpay-invoices', ['as' => 'save_razorpay-webhook', 'uses' 
 Route::get('/check-razorpay-invoices', ['as' => 'check_razorpay-webhook', 'uses' => 'RazorpayWebhookController@checkInvoices']);
 Route::post('/payfast-notification', ['as' => 'payfast-notification', 'uses' => 'PayFastWebhookController@saveInvoice']);
 Route::post('/client-payfast-invoice', ['as' => 'client-payfast-invoice', 'uses' => 'ClientPayFastController@savePayment']);
-
-
 Route::post('/save-paystack-invoices', ['as' => 'save_paystack-webhook', 'uses' => 'PaystackWebhookController@saveInvoices']);
 
 // Authorize.net webhook
@@ -194,7 +192,6 @@ Route::group(['middleware' => 'auth'], function () {
             Route::group(
                 ['prefix' => 'front-settings'],
                 function () {
-
                     Route::get('front-theme-settings', ['uses' => 'SuperAdminFrontSettingController@themeSetting'])->name('theme-settings');
                     Route::post('front-theme-update', ['uses' => 'SuperAdminFrontSettingController@themeUpdate'])->name('theme-update');
                     Route::get('auth-settings', ['uses' => 'SuperAdminFrontSettingController@authSetting'])->name('auth-settings');
@@ -203,7 +200,6 @@ Route::group(['middleware' => 'auth'], function () {
                     Route::get('front-settings/change-form', 'SuperAdminFrontSettingController@changeForm')->name('front-settings.changeForm');
                     Route::resource('front-settings', 'SuperAdminFrontSettingController', ['only' => ['index', 'update']]);
                     Route::resource('seo-detail', 'SuperAdminSeoDetailController', ['only' => ['edit', 'update', 'index']]);
-
                     Route::get('feature-settings/change-form', ['uses' => 'SuperAdminFeatureSettingController@changeForm'])->name('feature-settings.changeForm');
                     Route::post('feature-settings/title-update', ['uses' => 'SuperAdminFeatureSettingController@updateTitles'])->name('feature-settings.title-update');
                     Route::resource('feature-settings', 'SuperAdminFeatureSettingController');
@@ -316,7 +312,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::group(['middleware' => ['account-setup', 'license-expire']], function () {
                 Route::get('/dashboard', 'AdminDashboardController@index')->name('dashboard');
                 Route::get('/dashboard/stripe-pop-up-close', 'AdminDashboardController@stripePopUpClose')->name('dashboard.stripe-pop-up-close');
-                //                Route::post('/dashboard/widget', 'AdminDashboardController@widget')->name('dashboard.widget');
+                // `Route::post('/dashboard/widget', 'AdminDashboardController@widget')->name('dashboard.widget');
                 Route::get('/client-dashboard', 'AdminDashboardController@clientDashboard')->name('clientDashboard');
                 Route::get('/finance-dashboard', 'AdminDashboardController@financeDashboard')->name('financeDashboard');
                 Route::get('/finance-dashboard/estimate', 'AdminDashboardController@financeDashboardEstimate')->name('financeDashboardEstimate');
@@ -361,6 +357,13 @@ Route::group(['middleware' => 'auth'], function () {
 
                 Route::get('agents', ['uses' => 'ManageAgentsController@index'])->name('agents.index');
                 Route::post('agents/store', ['uses' => 'ManageAgentsController@store'])->name('agents.store');
+                // Route::get('/agents/correspondingagent','ManageAgentsController@correspondingleads')->name('agents.correspondingleads');
+                Route::get('/agents/{id}/correspondingleads', 'ManageAgentsController@correspondingleads')->name('agents.correspondingleads');
+
+
+
+
+
 
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');
                 Route::get('leads/kanban-board', ['uses' => 'LeadController@kanbanboard'])->name('leads.kanbanboard');
@@ -377,11 +380,19 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::post('leads/save-consent-purpose-data/{lead}', ['uses' => 'LeadController@saveConsentLeadData'])->name('leads.save-consent-purpose-data');
                 Route::get('leads/consent-purpose-data/{lead}', ['uses' => 'LeadController@consentPurposeData'])->name('leads.consent-purpose-data');
                 Route::post('leads/updateIndex', ['as' => 'leads.updateIndex', 'uses' => 'LeadController@updateIndex']);
+
+
+
+// /dsbashgashasvdhjcvdcvsnbnsb nb
                 Route::resource('leads', 'LeadController');
                 Route::post('/leads/import', ['uses' => 'LeadController@import'])->name('leads.import');
-                Route::post('leads/bulk-delete', 'LeadController@bulkDelete')->name('leads.bulk-delete');
+// sabcjhcvhjasvjhasvdhjaj
 
+
+
+                Route::post('leads/bulk-delete', 'LeadController@bulkDelete')->name('leads.bulk-delete');
                 Route::post('lead-form/sortFields', ['as' => 'lead-form.sortFields', 'uses' => 'LeadCustomFormController@sortFields']);
+
                 Route::resource('lead-form', 'LeadCustomFormController');
                 Route::get('leadCategory/create-cat', ['uses' => 'LeadCategoryController@createCat'])->name('leadCategory.create-cat');
                 Route::post('leadCategory/store-cat', ['uses' => 'LeadCategoryController@storeCat'])->name('leadCategory.store-cat');
@@ -684,7 +695,6 @@ Route::group(['middleware' => 'auth'], function () {
 
                 Route::get('all-issues/data', ['uses' => 'ManageAllIssuesController@data'])->name('all-issues.data');
                 Route::resource('all-issues', 'ManageAllIssuesController');
-
                 Route::get('all-time-logs/members/{projectId}', ['uses' => 'ManageAllTimeLogController@membersList'])->name('all-time-logs.members');
                 Route::get('all-time-logs/task-members/{taskId}', ['uses' => 'ManageAllTimeLogController@taskMembersList'])->name('all-time-logs.task-members');
                 Route::get('all-time-logs/show-active-timer', ['uses' => 'ManageAllTimeLogController@showActiveTimer'])->name('all-time-logs.show-active-timer');
@@ -713,7 +723,7 @@ Route::group(['middleware' => 'auth'], function () {
                         Route::get('all-tasks/history/{taskid}', ['uses' => 'ManageAllTasksController@history'])->name('all-tasks.history');
                         Route::get('all-tasks/pinned-task', ['uses' => 'ManageAllTasksController@pinnedItem'])->name('all-tasks.pinned-task');
                         Route::resource('all-tasks', 'ManageAllTasksController');
-                        //task request 
+                        //task request
                         Route::resource('task-request', 'AdminTaskRequestController');
                         Route::post('task-request/reject-tasks/{taskId?}', ['uses' => 'AdminTaskRequestController@rejectTask'])->name('task-request.reject-tasks');
                         Route::delete('task-request/delete-file/{id?}', ['uses' => 'AdminTaskRequestController@deleteTaskFile'])->name('task-request.delete-file');
@@ -735,8 +745,6 @@ Route::group(['middleware' => 'auth'], function () {
                 );
 
                 Route::resource('sticky-note', 'ManageStickyNotesController');
-
-
                 Route::resource('reports', 'TaskReportController', ['only' => ['edit', 'update', 'index']]); // hack to make left admin menu item active
                 Route::group(
                     ['prefix' => 'reports'],
@@ -760,13 +768,8 @@ Route::group(['middleware' => 'auth'], function () {
                         //endregion
                     }
                 );
-
                 Route::resource('search', 'AdminSearchController');
-
-
-
                 Route::resource('finance', 'ManageEstimatesController', ['only' => ['edit', 'update', 'index']]); // hack to make left admin menu item active
-
                 Route::group(
                     ['prefix' => 'finance'],
                     function () {

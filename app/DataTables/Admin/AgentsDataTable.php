@@ -4,14 +4,11 @@ namespace App\DataTables\Admin;
 
 use App\LeadAgent;
 use App\DataTables\BaseDataTable;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 
 class AgentsDataTable extends BaseDataTable
 {
-
     /**
      * Build DataTable class.
      *
@@ -22,84 +19,49 @@ class AgentsDataTable extends BaseDataTable
     {
         return datatables()
             ->eloquent($query)
-            ->addColumn('action', function ($row) {
-
-                $action = '<div class="btn-group dropdown m-r-10">
-                 <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default dropdown-toggle waves-effect waves-light" type="button"><i class="fa fa-gears "></i></button>
-                <ul role="menu" class="dropdown-menu pull-right">
-                  <li><a href="' . route('admin.clients.edit', [$row->id]) . '"><i class="fa fa-pencil" aria-hidden="true"></i> ' . trans('app.edit') . '</a></li>
-                  <li><a href="' . route('admin.clients.show', [$row->user_id]) . '"><i class="fa fa-search" aria-hidden="true"></i> ' . __('app.view') . '</a></li>
-                  <li><a href="javascript:;"  data-user-id="' . $row->user_id . '"  class="sa-params"><i class="fa fa-times" aria-hidden="true"></i> ' . trans('app.delete') . '</a></li>';
-
-                $action .= '</ul> </div>';
-
-                return $action;
+            ->addColumn('lead_agents', function ($row) {
+                $agentIds = explode(',', $row->lead_agents);
+    $agentNames = \App\User::whereIn('id', $agentIds)->pluck('name')->toArray();
+    return implode('<br>', $agentNames);
             })
-            ->editColumn(
-                'user_id',
-                function ($row) {
-                    return '<a href="' . route('admin.clients.show', $row->user_id) . '">' . ucfirst($row->name) . '</a>';
+            ->addColumn('action', function ($row) {
+                return '<div class="btn-group dropdown m-r-10">
+                    <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default dropdown-toggle waves-effect waves-light" type="button">
+                    <i class="fa fa-gears "></i></button>
+                    <ul role="menu" class="dropdown-menu pull-right">
+                      <li><a href="' . route('admin.clients.edit', [$row->id]) . '"><i class="fa fa-pencil" aria-hidden="true"></i> ' . trans('app.edit') . '</a></li>
+                      <li><a href="' . route('admin.clients.show', [$row->user_id]) . '"><i class="fa fa-search" aria-hidden="true"></i> ' . __('app.view') . '</a></li>
+                      <li><a href="javascript:;" data-user-id="' . $row->user_id . '" class="sa-params"><i class="fa fa-times" aria-hidden="true"></i> ' . trans('app.delete') . '</a></li>
+                    </ul>
+                </div>';
+            })
+            ->editColumn('name', function ($row) {
+                // Check if user ID is available and create link
+                if ($row->user_id) {
+                    $link = '<a href="'  . route('admin.agents.correspondingleads', [$row->id])  . '">' . ucwords($row->name) . '</a>';
+                    return $link;
                 }
-            )
-           
-
-            ->addIndexColumn()
-            ->rawColumns(['user_id','action', 'status']);
+                return ucwords($row->name);
+            })
+            ->rawColumns(['name', 'lead_agents', 'action'])
+            
+            ->addIndexColumn();
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\User $model
+     * @param \App\LeadAgent $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function query(LeadAgent $model)
     {
         $request = $this->request();
-        $model = $model->join('users', 'client_details.user_id', '=', 'users.id')
-            ->leftJoin('countries', 'client_details.country_id', '=', 'countries.id')
-            ->select('client_details.id', 'client_details.user_id', 'client_details.name', 'client_details.company_name', 'client_details.email', 'client_details.created_at',
-            'client_details.mobile', 'countries.phonecode')
-            ->groupBy('client_details.id');
 
-        if ($request->startDate !== null && $request->startDate != 'null' && $request->startDate != '') {
-            $startDate = Carbon::createFromFormat($this->global->date_format, $request->startDate)->toDateString();
-            $model = $model->where(DB::raw('DATE(client_details.`created_at`)'), '>=', $startDate);
-        }
-
-        if ($request->endDate !== null && $request->endDate != 'null' && $request->endDate != '') {
-            $endDate = Carbon::createFromFormat($this->global->date_format, $request->endDate)->toDateString();
-            $model = $model->where(DB::raw('DATE(client_details.`created_at`)'), '<=', $endDate);
-        }
-        if ($request->client != 'all' && $request->client != '') {
-            $model = $model->where('users.id', $request->client);
-        }
-        if (!is_null($request->category_id) && $request->category_id != 'all') {
-            $model = $model->where('client_details.category_id', $request->category_id);
-        }
-        if (!is_null($request->sub_category_id) && $request->sub_category_id != 'all' && $request->sub_category_id != 0) {
-            $model = $model->where('client_details.sub_category_id', $request->sub_category_id);
-        }
-
-        if (!is_null($request->project_id) && $request->project_id != 'all') {
-            $model->whereHas('projects', function ($query)use($request) {
-                return $query->where('id', $request->project_id);
-               
-            });
-        }
-        if (!is_null($request->contract_type_id) && $request->contract_type_id != 'all') {
-            $model->whereHas('contracts', function ($query)use($request) {
-                return $query->where('contracts.contract_type_id', $request->contract_type_id);
-               
-            });
-        }
-        if (!is_null($request->country_id) && $request->country_id != 'all') {
-            $model->whereHas('country', function ($query)use($request) {
-                return $query->where('id', $request->country_id);
-               
-            });
-        }
-        return $model;
+        return $model->join('users', 'lead_agents.user_id', '=', 'users.id')
+            ->join('companies', 'users.company_id', '=', 'companies.id')
+            ->select('lead_agents.id', 'lead_agents.user_id', 'users.name', 'companies.company_name', 'companies.id as company_id');
+            
     }
 
     /**
@@ -110,8 +72,8 @@ class AgentsDataTable extends BaseDataTable
     public function html()
     {
         return $this->builder()
-            ->setTableId('clients-table')
-            ->columns($this->processTitle($this->getColumns()))
+            ->setTableId('agents-table')
+            ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom("<'row'<'col-md-6'l><'col-md-6'Bf>><'row'<'col-sm-12'tr>><'row'<'col-sm-5'i><'col-sm-7'p>>")
             ->orderBy(0)
@@ -123,7 +85,7 @@ class AgentsDataTable extends BaseDataTable
             ->language(__('app.datatable'))
             ->parameters([
                 'initComplete' => 'function () {
-                   window.LaravelDataTables["clients-table"].buttons().container()
+                   window.LaravelDataTables["agents-table"].buttons().container()
                     .appendTo( ".bg-title .text-right")
                 }',
                 'fnDrawCallback' => 'function( oSettings ) {
@@ -143,12 +105,9 @@ class AgentsDataTable extends BaseDataTable
     protected function getColumns()
     {
         return [
-            __('app.id') => ['data' => 'id', 'name' => 'id', 'visible' => false, 'exportable' => false],
-            '#' => ['data' => 'DT_RowIndex', 'orderable' => false, 'searchable' => false],
-            __('app.agentName') => ['data' => 'name', 'name' => 'name'],
-            __('modules.client.companyName') => ['data' => 'company_name', 'name' => 'client_details.company_name'],
-            __('app.email') => ['data' => 'email', 'name' => 'email'],
-            Column::computed('action', __('app.action'))
+            __('app.agentName') => ['data' => 'name', 'name' => 'users.name'],
+            // __('modules.client.companyName') => ['data' => 'company_name', 'name' => 'companies.company_name'],
+                       Column::computed('action', __('app.action'))
                 ->exportable(false)
                 ->printable(false)
                 ->orderable(false)
@@ -165,7 +124,7 @@ class AgentsDataTable extends BaseDataTable
      */
     protected function filename()
     {
-        return 'clients_' . date('YmdHis');
+        return 'agents_' . date('YmdHis');
     }
 
     public function pdf()
@@ -180,5 +139,4 @@ class AgentsDataTable extends BaseDataTable
 
         return $pdf->download($this->getFilename() . '.pdf');
     }
-
-}
+}   

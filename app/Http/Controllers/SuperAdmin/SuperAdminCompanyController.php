@@ -80,9 +80,9 @@ class SuperAdminCompanyController extends SuperAdminBaseController
     public function store(StoreRequest $request)
     {
         DB::beginTransaction();
-
+        
         $company = new Company();
-
+        
         $companyDetail = $this->storeAndUpdate($company, $request);
 
         $globalCurrency = GlobalCurrency::findOrFail($request->currency_id);
@@ -399,21 +399,20 @@ class SuperAdminCompanyController extends SuperAdminBaseController
         $company->timezone = $request->input('timezone');
         $company->locale = $request->input('locale');
         $company->status = $request->status;
-
+        
         if ($request->hasFile('logo')) {
             $company->logo = Files::upload($request->logo, 'app-logo');
         }
-
+        
         $company->last_updated_by = $this->user->id;
-
+        
         if (module_enabled('Subdomain')) {
             $company->sub_domain = $request->sub_domain;
         }
-
+        
+        
+                try {
         $company->save();
-
-
-        try {
             $this->updateExchangeRatesCompanyWise($company);
         } catch (\Exception $e) {
         }

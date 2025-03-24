@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('page-title')
-<div class="row bg-title">
 
+<div class="row bg-title">
 <!-- .page title -->
 <div class="col-lg-8 col-md-5 col-sm-6 col-xs-12 bg-title-left">
     <h4 class="page-title"><i class="{{ $pageIcon }}"></i> {{ __($pageTitle) }}
@@ -38,97 +38,13 @@
     display: block !important;
     }
     </style>
-
 @endpush
-@section('filter-section')
-<div class="row"  id="ticket-filters">
-    
-    <form action="" id="filter-form">
-        <div class="col-xs-12">
-            <h5 >@lang('app.selectDateRange')</h5>
-            <div class="form-group">
-                <div id="reportrange" class="form-control reportrange">
-                    <i class="fa fa-calendar"></i>&nbsp;
-                    <span></span> <i class="fa fa-caret-down pull-right"></i>
-                </div>
-
-                <input type="hidden" class="form-control" id="start-date" placeholder="@lang('app.startDate')"
-                       value=""/>
-                <input type="hidden" class="form-control" id="end-date" placeholder="@lang('app.endDate')"
-                       value=""/>
-            </div>
-        </div>
-
-        <div class="col-xs-12">
-            <div class="form-group">
-                <h5 >@lang('app.client')</h5>
-                <select class="form-control select2" name="client" id="client" data-style="form-control">
-                    <option value="all">@lang('modules.client.all')</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <h5>@lang('app.category')</h5>
-                <select class="form-control select2" name="category_id" id="category_id"
-                        data-style="form-control">
-                    <option value="all">@lang('modules.client.all')</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <h5>@lang('modules.productCategory.subCategory')</h5>
-                <select class="form-control select2" name="sub_category_id" id="sub_category_id"
-                        data-style="form-control">
-                    <option value="all">@lang('modules.client.all')</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="form-group">
-                <h5>@lang('modules.logTimeSetting.project')</h5>
-                <select class="form-control select2" name="project_id" id="project_id"
-                        data-style="form-control">
-                    <option value="all">@lang('modules.client.all')</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <h5>@lang('modules.contracts.contractType')</h5>
-                <select class="form-control select2" name="contract_type_id" id="contract_type_id"
-                        data-style="form-control">
-                    <option value="all">@lang('modules.client.all')</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="form-group">
-                <h5>@lang('modules.stripeCustomerAddress.country')</h5>
-                <select class="form-control select2" name="country_id" id="country_id"
-                        data-style="form-control">
-                    <option value="all">@lang('modules.client.all')</option>
-                </select>
-            </div>
-        </div>
-        <div class="col-xs-12">
-            <div class="form-group p-t-10">
-                <button type="button" id="apply-filters" class="btn btn-success col-md-6"><i class="fa fa-check"></i> @lang('app.apply')</button>
-                <button type="button" id="reset-filters" class="btn btn-inverse col-md-5 col-md-offset-1"><i class="fa fa-refresh"></i> @lang('app.reset')</button>
-            </div>
-        </div>
-    </form>
-</div>
-@endsection
 @section('content')
 
     <div class="row">
  
         <div class="col-xs-12">
             <div class="white-box">
-                
 
                 <div class="table-responsive">
                     {!! $dataTable->table(['class' => 'table table-bordered table-hover toggle-circle default footable-loaded footable']) !!}
@@ -229,4 +145,8 @@
     <script src="{{ asset('plugins/bower_components/moment/moment.js') }}"></script>
     <script type="text/javascript" src="{{ asset('plugins/daterange-picker/daterangepicker.js') }}"></script>
     {!! $dataTable->scripts() !!}
+    
    @endpush
+
+
+   

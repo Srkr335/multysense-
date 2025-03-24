@@ -2,15 +2,15 @@
 
 namespace App\DataTables\Admin;
 
-use App\DataTables\BaseDataTable;
 use App\Lead;
-use App\LeadStatus;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\LeadStatus;
+use Illuminate\Support\Str;
+use App\DataTables\BaseDataTable;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class LeadsDataTable extends BaseDataTable
 {
@@ -45,7 +45,7 @@ class LeadsDataTable extends BaseDataTable
                     <li><a href="' . route('admin.leads.show', $row->id) . '"><i class="fa fa-search"></i> ' . __('modules.lead.view') . '</a></li>
                     <li><a href="' . route('admin.leads.edit', $row->id) . '"><i class="fa fa-edit"></i> ' . __('modules.lead.edit') . '</a></li>
                     <li><a href="javascript:;" class="sa-params" data-user-id="' . $row->id . '"><i class="fa fa-trash "></i> ' . __('app.delete') . '</a></li>
-                     ' . $follow . '   
+                     ' . $follow . '
                 </ul>
               </div>';
                 return $action;
@@ -125,7 +125,7 @@ class LeadsDataTable extends BaseDataTable
                     return '--';
                 }
             })->rawColumns(['call_status']) // This line allows HTML output in the call_status column
-                        
+
             ->editColumn('client_email', function ($row) {
                 if ($row->client_email != null && $row->client_email != '') {
                     return ($row->client_email);
@@ -147,7 +147,7 @@ class LeadsDataTable extends BaseDataTable
                     return '<a href="'. $whatsappLink .'" target="_blank"><i class="fa fa-whatsapp"></i></a>';
                 }
                 return '--';
-            })            
+            })
             ->removeColumn('status_id')
             ->removeColumn('client_id')
             ->removeColumn('lead_value')
@@ -169,8 +169,8 @@ class LeadsDataTable extends BaseDataTable
         $setting = company();
         $currentDate = Carbon::now()->timezone($setting->timezone)->format('Y-m-d H:i');
         $lead = Lead::select('leads.id', 'leads.client_id', 'leads.mobile','leads.call_status', 'leads.client_email', 'leads.next_follow_up', 'client_name', 'company_name', 'lead_status.type as statusName', 'status_id', 'leads.created_at', 'leads.value', 'lead_sources.type as source', 'users.name as agent_name', 'users.image',
-            \DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' and next_follow_up_date >= '{$currentDate}' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"),\DB::raw("(select remark from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' and next_follow_up_date >= '{$currentDate}' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_remark"),
-            \DB::raw("(select follow.next_follow_up_date as pending_follow_up from lead_follow_up as follow where follow.lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date desc limit 1) as pending_follow_up"))
+            DB::raw("(select next_follow_up_date from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' and next_follow_up_date >= '{$currentDate}' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_date"),DB::raw("(select remark from lead_follow_up where lead_id = leads.id and leads.next_follow_up  = 'yes' and next_follow_up_date >= '{$currentDate}' ORDER BY next_follow_up_date asc limit 1) as next_follow_up_remark"),
+            DB::raw("(select follow.next_follow_up_date as pending_follow_up from lead_follow_up as follow where follow.lead_id = leads.id and leads.next_follow_up  = 'yes' ORDER BY next_follow_up_date desc limit 1) as pending_follow_up"))
             ->leftJoin('lead_status', 'lead_status.id', 'leads.status_id')
             ->leftJoin('lead_agents', 'lead_agents.id', 'leads.agent_id')
             ->leftJoin('users', 'users.id', 'lead_agents.user_id')
